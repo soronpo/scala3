@@ -128,6 +128,17 @@ class PostTyper extends MacroTransform with InfoTransformer { thisPhase =>
 
     private var noCheckNews: Set[New] = Set()
 
+    /** Set while traversing the `call` of an `Inlined` node. Used to avoid
+     *  exponential blowup when transparent inline operations are chained:
+     *  each `Inlined`'s `call` contains the full tree of previous operations
+     *  (since inline parameters carry their expanded trees), so naively
+     *  re-entering `transform(call)` on nested `Inlined` nodes retransforms
+     *  the same subtrees exponentially many times. Nested `Inlined` nodes
+     *  reached via the outer's `call` are skipped here and processed when
+     *  reached via the outer's `expansion`.
+     */
+    private var inInlinedCall: Boolean = false
+
     def isValidUnrolledMethod(method: Symbol, origin: SrcPos)(using Context): Boolean =
       seenUnrolledMethods.getOrElseUpdate(method, {
         val isCtor = method.isConstructor
@@ -563,10 +574,20 @@ class PostTyper extends MacroTransform with InfoTransformer { thisPhase =>
               transform(fn)
           cpy.TypeApply(tree1)(fn1, args1)
         case tree @ Inlined(call, bindings, expansion) if !tree.inlinedFromOuterScope =>
-          val pos = call.sourcePos
-          CrossVersionChecks.checkRef(call.symbol, pos)
-          val callTrace = Inlines.inlineCallTrace(call.symbol, pos)(using ctx.withSource(pos.source))
-          cpy.Inlined(tree)(callTrace, transformSub(bindings), transform(expansion)(using inlineContext(tree)))
+          if inInlinedCall then
+            // We are inside the `transform(call)` of an enclosing Inlined node.
+            // Skip this nested Inlined to avoid exponential retransformation of
+            // shared subtrees; it will be processed when reached via the
+            // enclosing Inlined's `expansion`.
+            tree
+          else
+            val pos = call.sourcePos
+            CrossVersionChecks.checkRef(call.symbol, pos)
+            inInlinedCall = true
+            try withMode(Mode.NoInline)(transform(call))
+            finally inInlinedCall = false
+            val callTrace = Inlines.inlineCallTrace(call.symbol, pos)(using ctx.withSource(pos.source))
+            cpy.Inlined(tree)(callTrace, transformSub(bindings), transform(expansion)(using inlineContext(tree)))
         case templ: Template =>
           Checking.checkPolyFunctionExtension(templ)
           withNoCheckNews(templ.parents.flatMap(newPart)) {
