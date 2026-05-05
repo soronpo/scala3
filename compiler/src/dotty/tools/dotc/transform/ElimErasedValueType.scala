@@ -107,19 +107,20 @@ class ElimErasedValueType extends MiniPhase with InfoTransformer { thisPhase =>
         (sym1.owner.derivesFrom(defn.PolyFunctionClass) ||
          sym2.owner.derivesFrom(defn.PolyFunctionClass))
 
+      def oneErasedInline =
+        sym1.isInlineMethod && !sym1.isRetainedInlineMethod
+        || sym2.isInlineMethod && !sym2.isRetainedInlineMethod
+
       // super-accessors start as private, and their expanded name can clash after
       // erasure. TODO: Verify that this is OK.
       def bothSuperAccessors = sym1.name.is(SuperAccessorName) && sym2.name.is(SuperAccessorName)
-      if (sym1.name != sym2.name && !bothSuperAccessors ||
-          !info1.matchesLoosely(info2) && !bothPolyApply)
+      if (sym1.name != sym2.name && !bothSuperAccessors
+         || !info1.matchesLoosely(info2) && !bothPolyApply && !oneErasedInline)
         report.error(DoubleDefinition(sym1, sym2, root), root.srcPos)
     }
     while (opc.hasNext) {
       val sym1 = opc.overriding
       val sym2 = opc.overridden
-      // Do the test at the earliest phase where both symbols existed.
-      val phaseId =
-        sym1.originDenotation.validFor.firstPhaseId max sym2.originDenotation.validFor.firstPhaseId
       atPhase(elimByNamePhase.next)(checkNoConflict(sym1, sym2, sym1.info))
       opc.next()
     }

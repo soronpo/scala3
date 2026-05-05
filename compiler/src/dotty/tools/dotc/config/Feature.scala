@@ -11,6 +11,7 @@ import SourceVersion.*
 import reporting.Message
 import NameKinds.QualifiedName
 import Annotations.ExperimentalAnnotation
+import Annotations.PreviewAnnotation
 import Settings.Setting.ChoiceWithHelp
 
 object Feature:
@@ -27,22 +28,31 @@ object Feature:
 
   val dependent = experimental("dependent")
   val erasedDefinitions = experimental("erasedDefinitions")
+  val strictEqualityPatternMatching = experimental("strictEqualityPatternMatching")
   val symbolLiterals = deprecated("symbolLiterals")
-  val fewerBraces = experimental("fewerBraces")
   val saferExceptions = experimental("saferExceptions")
-  val clauseInterleaving = experimental("clauseInterleaving")
   val pureFunctions = experimental("pureFunctions")
   val captureChecking = experimental("captureChecking")
+  val separationChecking = experimental("separationChecking")
   val into = experimental("into")
   val modularity = experimental("modularity")
-  val betterMatchTypeExtractors = experimental("betterMatchTypeExtractors")
   val quotedPatternsWithPolymorphicFunctions = experimental("quotedPatternsWithPolymorphicFunctions")
-  val betterFors = experimental("betterFors")
+  val packageObjectValues = experimental("packageObjectValues")
+  val multiSpreads = experimental("multiSpreads")
+  val subCases = experimental("subCases")
+  val relaxedLambdaSyntax = experimental("relaxedLambdaSyntax")
+  val safe = experimental("safe")
 
+  val nonViralExperimentalFeatures: Set[TermName] =
+    Set(captureChecking, separationChecking, safe)
+
+  /** Experimental language imports that imply that the importing unit
+   *  is experimental.
+   */
   def experimentalAutoEnableFeatures(using Context): List[TermName] =
     defn.languageExperimentalFeatures
       .map(sym => experimental(sym.name))
-      .filterNot(_ == captureChecking) // TODO is this correct?
+      .filterNot(nonViralExperimentalFeatures.contains(_))
 
   val values = List(
     (nme.help, "Display all available features"),
@@ -58,16 +68,19 @@ object Feature:
     (scala2macros, "Allow Scala 2 macros"),
     (dependent, "Allow dependent method types"),
     (erasedDefinitions, "Allow erased definitions"),
+    (strictEqualityPatternMatching, "relaxed CanEqual checks for ADT pattern matching"),
     (symbolLiterals, "Allow symbol literals"),
-    (fewerBraces, "Enable support for using indentation for arguments"),
     (saferExceptions, "Enable safer exceptions"),
-    (clauseInterleaving, "Enable clause interleaving"),
     (pureFunctions, "Enable pure functions for capture checking"),
     (captureChecking, "Enable experimental capture checking"),
+    (separationChecking, "Enable experimental separation checking (requires captureChecking)"),
     (into, "Allow into modifier on parameter types"),
     (modularity, "Enable experimental modularity features"),
-    (betterMatchTypeExtractors, "Enable better match type extractors"),
-    (betterFors, "Enable improvements in `for` comprehensions")
+    (packageObjectValues, "Enable experimental package objects as values"),
+    (multiSpreads, "Enable experimental varargs with multi-spreads"),
+    (subCases, "Enable experimental match expressions with sub-cases"),
+    (relaxedLambdaSyntax, "Enable experimental relaxed lambda syntax"),
+    (safe, "Require safe mode"),
   )
 
   // legacy language features from Scala 2 that are no longer supported.
@@ -122,11 +135,6 @@ object Feature:
 
   def namedTypeArgsEnabled(using Context) = enabled(namedTypeArguments)
 
-  def clauseInterleavingEnabled(using Context) =
-    sourceVersion.isAtLeast(`3.6`) || enabled(clauseInterleaving)
-
-  def betterForsEnabled(using Context) = enabled(betterFors)
-
   def genericNumberLiteralsEnabled(using Context) = enabled(genericNumberLiterals)
 
   def scala2ExperimentalMacroEnabled(using Context) = enabled(scala2macros)
@@ -140,10 +148,26 @@ object Feature:
     || ctx.compilationUnit.knowsPureFuns
     || ccEnabled
 
-  /** Is captureChecking enabled for this compilation unit? */
-  def ccEnabled(using Context) =
+  /** Is capture checking enabled by a command-line setting? */
+  def ccEnabledBySetting(using Context): Boolean =
     enabledBySetting(captureChecking)
-    || ctx.compilationUnit.needsCaptureChecking
+    || enabledBySetting(separationChecking)
+    || enabledBySetting(safe)
+
+  /** Is capture checking enabled for this compilation unit? */
+  def ccEnabled(using Context) =
+    ccEnabledBySetting
+    || ctx.originalCompilationUnit.needsCaptureChecking
+
+  /** Is separation checking enabled for this compilation unit? */
+  def sepChecksEnabled(using Context) =
+    enabledBySetting(separationChecking)
+    || ctx.originalCompilationUnit.needsSeparationChecking
+
+  /** Is safe mode set for this compilation unit? */
+  def safeEnabled(using Context) =
+    enabledBySetting(safe)
+    || ctx.originalCompilationUnit.safeMode
 
   /** Is pureFunctions enabled for any of the currently compiled compilation units? */
   def pureFunsEnabledSomewhere(using Context) =
@@ -154,7 +178,7 @@ object Feature:
   /** Is captureChecking enabled for any of the currently compiled compilation units? */
   def ccEnabledSomewhere(using Context) =
     if ctx.run != null then ctx.run.nn.ccEnabledSomewhere
-    else enabledBySetting(captureChecking)
+    else ccEnabled
 
   def sourceVersionSetting(using Context): SourceVersion =
     SourceVersion.valueOf(ctx.settings.source.value)
@@ -164,11 +188,12 @@ object Feature:
       case Some(v) => v
       case none => sourceVersionSetting
 
+  /* Should we behave as scala 2?*/
+  def shouldBehaveAsScala2(using Context): Boolean =
+    ctx.settings.YcompileScala2Library.value || sourceVersion.isScala2
+
   def migrateTo3(using Context): Boolean =
     sourceVersion == `3.0-migration`
-
-  def fewerBracesEnabled(using Context) =
-    sourceVersion.isAtLeast(`3.3`) || enabled(fewerBraces)
 
   /** If current source migrates to `version`, issue given warning message
    *  and return `true`, otherwise return `false`.
@@ -187,7 +212,8 @@ object Feature:
       report.error(experimentalUseSite(which) + note, srcPos)
 
   private def ccException(sym: Symbol)(using Context): Boolean =
-    ccEnabled && defn.ccExperimental.contains(sym)
+    ccEnabled && (defn.ccExperimental.contains(sym)
+      || sym.exists && defn.ccExperimental.contains(sym.owner))
 
   def checkExperimentalDef(sym: Symbol, srcPos: SrcPos)(using Context) =
     val experimentalSym =
@@ -223,21 +249,63 @@ object Feature:
   def isExperimentalEnabledByImport(using Context): Boolean =
     experimentalAutoEnableFeatures.exists(enabledByImport)
 
-  /** Handle language import `import language.<prefix>.<imported>` if it is one
-   *  of the global imports `pureFunctions` or `captureChecking`. In this case
-   *  make the compilation unit's and current run's fields accordingly.
-   *  @return true iff import that was handled
+  /** Global language imports that affect parsing and must be handled specially.
+   *  These need per-compilation-unit flags (set in `handleGlobalLanguageImport`)
+   *  and also require propagation to rootCtx in the REPL and hoisting in the
+   *  snippet compiler so they take effect across inputs (i16250).
+   */
+  val globalLanguageImports: Set[TermName] =
+    Set(pureFunctions, captureChecking, separationChecking, safe)
+
+  /** Handle a global language import `import language.<prefix>.<imported>`.
+   *  Sets the compilation unit's and current run's fields accordingly.
+   *  @return true iff the import was handled
    */
   def handleGlobalLanguageImport(prefix: TermName, imported: Name)(using Context): Boolean =
-    val fullFeatureName = QualifiedName(prefix, imported.asTermName)
-    if fullFeatureName == pureFunctions then
-      ctx.compilationUnit.knowsPureFuns = true
-      if ctx.run != null then ctx.run.nn.pureFunsImportEncountered = true
-      true
-    else if fullFeatureName == captureChecking then
-      ctx.compilationUnit.needsCaptureChecking = true
-      if ctx.run != null then ctx.run.nn.ccEnabledSomewhere = true
-      true
-    else
-      false
+    QualifiedName(prefix, imported.asTermName) match
+      case `pureFunctions` =>
+        ctx.compilationUnit.knowsPureFuns = true
+        if ctx.run != null then ctx.run.nn.pureFunsImportEncountered = true
+        true
+      case `captureChecking` =>
+        ctx.compilationUnit.needsCaptureChecking = true
+        if ctx.run != null then ctx.run.nn.ccEnabledSomewhere = true
+        true
+      case `separationChecking` =>
+        ctx.compilationUnit.needsCaptureChecking = true
+        ctx.compilationUnit.needsSeparationChecking = true
+        if ctx.run != null then ctx.run.nn.ccEnabledSomewhere = true
+        true
+      case `safe` =>
+        ctx.compilationUnit.needsCaptureChecking = true
+        ctx.compilationUnit.safeMode = true
+        if ctx.run != null then ctx.run.nn.ccEnabledSomewhere = true
+        true
+      case _ =>
+        false
+
+  def isPreviewEnabled(using Context): Boolean =
+    ctx.settings.preview.value
+
+  def checkPreviewFeature(which: String, srcPos: SrcPos, note: => String = "")(using Context) =
+    if !isPreviewEnabled then
+      report.error(previewUseSite(which) + note, srcPos)
+
+  def checkPreviewDef(sym: Symbol, srcPos: SrcPos)(using Context) = if !isPreviewEnabled then
+    val previewSym =
+      if sym.hasAnnotation(defn.PreviewAnnot) then sym
+      else if sym.owner.hasAnnotation(defn.PreviewAnnot) then sym.owner
+      else NoSymbol
+    val msg =
+      previewSym.getAnnotation(defn.PreviewAnnot).collectFirst {
+        case PreviewAnnotation(msg) if msg.nonEmpty => s": $msg"
+      }.getOrElse("")
+    val markedPreview =
+      if previewSym.exists
+      then i"$previewSym is marked @preview$msg"
+      else i"$sym inherits @preview$msg"
+    report.error(i"${markedPreview}\n\n${previewUseSite("definition")}", srcPos)
+
+  private def previewUseSite(which: String): String =
+    s"Preview $which may only be used when compiling with the `-preview` compiler flag"
 end Feature

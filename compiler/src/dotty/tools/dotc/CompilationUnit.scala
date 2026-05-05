@@ -14,7 +14,6 @@ import ast.Trees.{Import, Ident}
 import typer.Nullables
 import core.Decorators.*
 import config.{SourceVersion, Feature}
-import StdNames.nme
 import scala.annotation.internal.sharable
 import scala.util.control.NoStackTrace
 import transform.MacroAnnotations.isMacroAnnotation
@@ -59,6 +58,9 @@ class CompilationUnit protected (val source: SourceFile, val info: CompilationUn
 
   var hasMacroAnnotations: Boolean = false
 
+  def hasUnrollDefs: Boolean = unrolledClasses.nonEmpty
+  var unrolledClasses: Set[Symbol] = Set.empty
+
   /** Set to `true` if inliner added anonymous mirrors that need to be completed */
   var needsMirrorSupport: Boolean = false
 
@@ -69,6 +71,12 @@ class CompilationUnit protected (val source: SourceFile, val info: CompilationUn
 
   /** Will be set to true if the unit contains a captureChecking language import */
   var needsCaptureChecking: Boolean = false
+
+  /** Will be set to true if the unit contains a captureChecking language import */
+  var needsSeparationChecking: Boolean = false
+
+  /** Will be set to true is unit was compiled with `safe` language import. */
+  var safeMode: Boolean = false
 
   /** Will be set to true if the unit contains a pureFunctions language import */
   var knowsPureFuns: Boolean = false
@@ -153,6 +161,14 @@ object CompilationUnit {
       unit1.hasMacroAnnotations = force.containsMacroAnnotation
     }
     unit1
+  }
+
+  /** Create a compilation unit corresponding to an in-memory String.
+   *  Used for `compiletime.testing.typeChecks`.
+   */
+  def apply(name: String, source: String): CompilationUnit = {
+    val src = SourceFile.virtual(name = name, content = source, maybeIncomplete = false)
+    new CompilationUnit(src, null)
   }
 
   /** Create a compilation unit corresponding to `source`.

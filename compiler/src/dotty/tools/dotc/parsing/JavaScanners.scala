@@ -632,6 +632,7 @@ object JavaScanners {
     /** convert name to long value
      */
     def intVal(negated: Boolean): Long =
+      val strVal = this.strVal.nn
       if (token == CHARLIT && !negated)
         if (strVal.length > 0) strVal.charAt(0).toLong else 0
       else {
@@ -666,7 +667,7 @@ object JavaScanners {
       val limit: Double =
         if (token == DOUBLELIT) Double.MaxValue else Float.MaxValue
       try {
-        val value: Double = java.lang.Double.valueOf(strVal.toString).nn.doubleValue()
+        val value: Double = java.lang.Double.valueOf(strVal.toString).doubleValue()
         if (value > limit)
           error(em"floating point number too large")
         if (negated) -value else value
@@ -729,7 +730,7 @@ object JavaScanners {
       case COMMA =>
         ","
       case _ =>
-        tokenString(token)
+        tokenString(token).nn
     }
 
     /* Initialization: read first char, then first token */

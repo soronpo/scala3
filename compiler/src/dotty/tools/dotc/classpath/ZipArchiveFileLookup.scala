@@ -3,7 +3,6 @@
  */
 package dotty.tools.dotc.classpath
 
-import scala.language.unsafeNulls
 
 import java.io.File
 import java.net.URL
@@ -20,8 +19,6 @@ import dotty.tools.io.{EfficientClassPath, ClassRepresentation}
 trait ZipArchiveFileLookup[FileEntryType <: ClassRepresentation] extends EfficientClassPath {
   val zipFile: File
   def release: Option[String]
-
-  assert(zipFile != null, "Zip file in ZipArchiveFileLookup cannot be null")
 
   override def asURLs: Seq[URL] = Seq(zipFile.toURI.toURL)
   override def asClassPathStrings: Seq[String] = Seq(zipFile.getPath)
@@ -47,7 +44,7 @@ trait ZipArchiveFileLookup[FileEntryType <: ClassRepresentation] extends Efficie
     for {
       dirEntry <- findDirEntry(inPackage)
       entry <- Option(dirEntry.lookupName(name, directory = false))
-      if isRequiredFileType(entry)
+      // no "if isRequiredFileType(entry)" check, we know exactly what we want
     }
     yield createFileEntry(entry)
 

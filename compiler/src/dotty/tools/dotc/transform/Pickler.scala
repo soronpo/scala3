@@ -25,12 +25,11 @@ import scala.annotation.constructorOnly
 import scala.concurrent.Promise
 import dotty.tools.dotc.transform.Pickler.writeSigFilesAsync
 
-import scala.util.chaining.given
 import dotty.tools.io.FileWriters.{EagerReporter, BufferingReporter}
 import dotty.tools.dotc.sbt.interfaces.IncrementalCallback
 import dotty.tools.dotc.sbt.asyncZincPhasesCompleted
+import dotty.tools.dotc.util.chaining.*
 import scala.concurrent.ExecutionContext
-import scala.util.control.NonFatal
 import java.util.concurrent.atomic.AtomicBoolean
 import java.nio.file.Files
 
@@ -104,8 +103,8 @@ object Pickler {
             case jar: JarArchive => jar.close()
             case _ =>
         catch
-          case NonFatal(t) =>
-            ctx.reporter.error(em"Error closing early output: ${t}")
+          case ex: Exception =>
+            ctx.reporter.error(em"Error closing early output: $ex")
 
       asyncTastyWritten.trySuccess:
         Some(
@@ -162,11 +161,11 @@ object Pickler {
           if !async.cancelled then
             val _ = writer.writeTasty(internalName, pickled)
       catch
-        case NonFatal(t) => ctx.reporter.exception(em"writing TASTy to early output", t)
+        case ex: Exception => ctx.reporter.exception(em"writing TASTy to early output", ex)
       finally
         writer.close()
     catch
-      case NonFatal(t) => ctx.reporter.exception(em"closing early output writer", t)
+      case ex: Exception => ctx.reporter.exception(em"closing early output writer", ex)
     finally
       async.signalAsyncTastyWritten()
   }
@@ -258,10 +257,10 @@ class Pickler extends Phase {
   }
 
   private def computeInternalName(cls: ClassSymbol)(using Context): String =
-    if cls.is(Module) then cls.binaryClassName.stripSuffix(str.MODULE_SUFFIX).nn
+    if cls.is(Module) then cls.binaryClassName.stripSuffix(str.MODULE_SUFFIX)
     else cls.binaryClassName
 
-  override def run(using Context): Unit = {
+  protected def run(using Context): Unit = {
     val unit = ctx.compilationUnit
     val isBestEffort = ctx.reporter.errorsReported || ctx.usedBestEffortTasty
     pickling.println(i"unpickling in run ${ctx.runId}")
@@ -291,12 +290,12 @@ class Pickler extends Phase {
       val isOutline = isJavaAttr // TODO: later we may want outline for Scala sources too
       val attributes = Attributes(
         sourceFile = sourceRelativePath,
-        scala2StandardLibrary = ctx.settings.YcompileScala2Library.value,
+        scala2StandardLibrary = Feature.shouldBehaveAsScala2,
         explicitNulls = ctx.settings.YexplicitNulls.value,
         captureChecked = Feature.ccEnabled,
         withPureFuns = Feature.pureFunsEnabled,
         isJava = isJavaAttr,
-        isOutline = isOutline
+        isOutline = isOutline,
       )
 
       val pickler = new TastyPickler(cls, isBestEffortTasty = isBestEffort)
@@ -306,7 +305,7 @@ class Pickler extends Phase {
           treePkl.pickle(tree :: Nil)
           true
         catch
-          case NonFatal(ex) if ctx.isBestEffort =>
+          case ex: Exception if ctx.isBestEffort =>
             report.bestEffortError(ex, "Some best-effort tasty files will not be generated.")
             false
       Profile.current.recordTasty(treePkl.buf.length)
@@ -413,11 +412,11 @@ class Pickler extends Phase {
       )
     if ctx.isBestEffort then
       val outpath =
-        ctx.settings.outputDir.value.jpath.toAbsolutePath.nn.normalize.nn
-          .resolve("META-INF").nn
+        ctx.settings.outputDir.value.jpath.nn.toAbsolutePath.normalize
+          .resolve("META-INF")
           .resolve("best-effort")
       Files.createDirectories(outpath)
-      BestEffortTastyWriter.write(outpath.nn, result)
+      BestEffortTastyWriter.write(outpath, result)
     result
   }
 

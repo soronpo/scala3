@@ -4,7 +4,6 @@ package core
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
-import scala.util.control.NonFatal
 
 import Contexts.*, Names.*, Phases.*, Symbols.*
 import printing.{ Printer, Showable }, printing.Formatting.*, printing.Texts.*
@@ -51,7 +50,7 @@ object Decorators {
         if name.length != 0 then name.getChars(0, name.length, chars, s.length)
         termName(chars, 0, len)
       case name: TypeName => s.concat(name.toTermName)
-      case _ => termName(s.concat(name.toString).nn)
+      case _ => termName(s.concat(name.toString))
 
     def indented(width: Int): String =
       val padding = " " * width
@@ -245,7 +244,7 @@ object Decorators {
   end extension
 
   extension (text: Text)
-    def show(using Context): String = text.mkString(ctx.settings.pageWidth.value, ctx.settings.printLines.value)
+    def show(using Context): String = text.mkString(ctx.settings.pageWidth.value)
 
   /** Test whether a list of strings representing phases contains
    *  a given phase. See [[config.CompilerCommand#explainAdvanced]] for the
@@ -286,13 +285,13 @@ object Decorators {
         try x.show
         catch
           case ex: CyclicReference => "... (caught cyclic reference) ..."
-          case NonFatal(ex)
+          case ex: Exception
           if !ctx.settings.YshowPrintErrors.value =>
             s"... (cannot display due to ${ex.className} ${ex.getMessage}) ..."
-      case _ => String.valueOf(x).nn
+      case _ => String.valueOf(x)
 
     /** Returns the simple class name of `x`. */
-    def className: String = if x == null then "<null>" else x.getClass.getSimpleName.nn
+    def className: String = if x == null then "<null>" else x.getClass.getSimpleName
 
   extension [T](x: T)
     def assertingErrorsReported(using Context): T = {

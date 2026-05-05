@@ -116,7 +116,35 @@ ClsParam  ::=  {Annotation} [{Modifier | ‘tracked’} (‘val’ | ‘var’)]
 
 The (soft) `tracked` modifier is only allowed for `val` parameters of classes.
 
-**Discussion**
+### Tracked Inference
+
+In some common cases the tracked modifier can be inferred, so it does not
+need to be written explicitly. Specifically, we infer `tracked` for a `val`
+parameter of a class if the formal parameter's type defines an abstract type member.
+This means that we do not lose information about how that member
+is defined in the actual argument passed to the class constructor.
+
+For instance, tracked `would` be inferred for the `SetFunctor` class
+we defined before, so we can also write it like this:
+```scala
+class SetFunctor(val ord: Ordering):
+  type Set = List[ord.T]
+  ...
+```
+The `tracked` modifier on the `ord` parameter is inferred here, since `ord` is of type `Ordering`, which defines an abstract type member `T`.
+
+Another common case is when a context bound has an associated type (i.e. an abstract type member) e.g.
+```scala 3
+trait TC:
+  type Self
+  type T
+
+class Klass[A: {TC as tc}]
+```
+
+Here, `tc` is a context bound with an associated type `T`, so `tracked val` will be inferred for `tc` and the parameter will be represented as a field.
+
+### Discussion
 
 Since `tracked` is so useful, why not assume it by default? First, `tracked` makes sense only for `val` parameters. If a class parameter is not also a field declared using `val` then there's nothing to refine in the constructor result type. One could think of at least making all `val` parameters tracked by default, but that would be a backwards incompatible change. For instance, the following code would break:
 
@@ -129,10 +157,79 @@ If we assume `tracked` for parameter `x` (which is implicitly a `val`),
 then `foo` would get inferred type `Foo { val x: 1 }`, so it could not
 be reassigned to a value of type `Foo { val x: 2 }` on the next line.
 
-Another approach might be to assume `tracked` for a `val` parameter `x`
-only if the class refers to a type member of `x`. But it turns out that this
-scheme is unimplementable since it would quickly lead to cyclic references
-when typechecking recursive class graphs. So an explicit `tracked` looks like the best available option.
+Another concern is that using tracked for all `val` parameters, including
+parameters of case classes could lead to large refinement types.
+
+Therefore, inferring tracked only for parameters with types that define abstract members is a usable compromise. After all, if we did not infer `tracked` for these types, any references to the abstract type via a path would likely produce compilation errors.
+
+## Tracked members
+
+The `tracked` modifier can also be used for `val` members of classes and traits
+to force the type of the member (or it's overriding member) to be as exact as
+possible. More precisely, it will will assign the `tracked` member the infered
+type of the rhs. For instance, consider the following definition:
+
+```scala
+trait F:
+  tracked val a: Int
+  tracked val b: Int
+
+class N extends F:
+  val a = 22 // a.type =:= 22
+  val b: Int = 22 // b.type =:= Int
+  tracked val c = 22 // c.type =:= 22
+```
+
+Here, the `tracked` modifier ensures that the type of `a` in `N` is `22` and not
+`Int`. But the type of `b` is `N` is `Int` since it's explicitly declared as
+`Int`. `tracked` members can also be immediately initialized, as in the case of
+`c`.
+
+## Tracked syntax change
+
+```
+LocalModifier     ::=  ‘tracked’
+```
+
+The (soft) `tracked` modifier is allowed as a local modifier.
+
+## Applied constructor types
+
+A new syntax is also introduced, to make classes with `tracked` parameters
+easier to use. The new syntax is essentially the ability to use an application
+of a class constructor as a type, we call such types applied constructor types.
+
+With this new feature the following example compiles correctly and the type in
+the comment is the resulting type of the applied constructor types.
+
+```scala
+import scala.language.experimental.modularity
+
+class C(tracked val v: Any)
+
+val c: C(42) /* C { val v: 42 } */ = C(42)
+```
+
+### Syntax change
+
+```
+SimpleType        ::=  SimpleLiteral
+                    |  ‘?’ TypeBounds
+---                 |  SimpleType1
++++                 |  SimpleType1 {ParArgumentExprs}
+```
+
+A `SimpleType` can now optionally be followed by `ParArgumentExprs`.
+
+The arguments are used to typecheck the whole type, as if it was a normal
+constructor application. For classes with `tracked` parameters this will mean
+that the resulting type will have a refinement for each `tracked` parameter.
+
+For example, given the following class definition:
+```scala
+class Person(tracked val name: String, tracked val age: Int)
+```
+**Type** `Person("Kasia", 27)` will be translated to `Person { val name: "Kasia"; val age: 27 }`.
 
 ## Allow Class Parents to be Refined Types
 

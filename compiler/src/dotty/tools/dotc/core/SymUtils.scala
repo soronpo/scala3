@@ -42,8 +42,8 @@ class SymUtils:
     }
 
     /** All traits implemented by a class, except for those inherited through the superclass.
-    *  The empty list if `self` is a trait.
-    */
+     *  The empty list if `self` is a trait.
+     */
     def mixins(using Context): List[ClassSymbol] =
       if (self.is(Trait)) Nil
       else directlyInheritedTraits
@@ -88,7 +88,10 @@ class SymUtils:
     }
 
     def isContextBoundCompanion(using Context): Boolean =
-      self.is(Synthetic) && self.infoOrCompleter.typeSymbol == defn.CBCompanion
+      self.is(Synthetic) && self.infoOrCompleter.isContextBoundCompanion
+
+    def isDummyCaptureParam(using Context): Boolean =
+      self.is(PhantomSymbol) && self.infoOrCompleter.typeSymbol != defn.CBCompanion
 
     /** Is this a case class for which a product mirror is generated?
     *  Excluded are value classes, abstract classes and case classes with more than one
@@ -117,6 +120,18 @@ class SymUtils:
     end whyNotGenericProduct
 
     def isGenericProduct(using Context): Boolean = whyNotGenericProduct.isEmpty
+
+    def sanitizedDescription(using Context): String =
+      if self.isConstructor then
+        i"constructor of ${self.owner.sanitizedDescription}"
+      else if self.isAnonymousFunction then
+        i"anonymous function of type ${self.info}"
+      else if self.is(ModuleClass) then
+        self.sourceModule.sanitizedDescription
+      else if self.name.toString.contains('$') then
+        self.owner.sanitizedDescription
+      else
+        self.show
 
     /** Is this an old style implicit conversion?
      *  @param directOnly            only consider explicitly written methods
@@ -237,6 +252,15 @@ class SymUtils:
       else if (self.exists) self.owner.enclosingMethodOrClass
       else NoSymbol
 
+    /** The closest enclosing method, class or object of this symbol.
+     *  Module references get mapped to their moduleClasses.
+     */
+    @tailrec final def enclosingMethodOrClassOrObject(using Context): Symbol =
+      if self.is(Method) || self.isClass then self
+      else if self.is(ModuleVal) then self.moduleClass
+      else if self.exists then self.owner.enclosingMethodOrClassOrObject
+      else NoSymbol
+
     /** Apply symbol/symbol substitution to this symbol */
     def subst(from: List[Symbol], to: List[Symbol]): Symbol = {
       @tailrec def loop(from: List[Symbol], to: List[Symbol]): Symbol =
@@ -287,7 +311,7 @@ class SymUtils:
      */
     def isConstExprFinalVal(using Context): Boolean =
       atPhaseNoLater(erasurePhase) {
-        self.is(Final, butNot = Mutable) && self.info.resultType.isInstanceOf[ConstantType]
+        self.is(Final) && !self.isMutableVarOrAccessor && self.info.resultType.isInstanceOf[ConstantType]
       } && !self.sjsNeedsField
 
     /** The `ConstantType` of a val known to be `isConstrExprFinalVal`.
@@ -300,7 +324,7 @@ class SymUtils:
       }
 
     def isField(using Context): Boolean =
-      self.isTerm && !self.is(Method)
+      self.isTerm && !self.isOneOf(Method | PhantomSymbol | NonMember | Package)
 
     def isEnumCase(using Context): Boolean =
       self.isAllOf(EnumCase, butNot = JavaDefined)
@@ -359,30 +383,36 @@ class SymUtils:
     /** Is symbol assumed or declared as an infix symbol? */
     def isDeclaredInfix(using Context): Boolean =
       self.is(Infix)
-      || defn.isInfix(self)
       || self.name.isUnapplyName
         && self.owner.is(Module)
         && self.owner.linkedClass.is(Case)
         && self.owner.linkedClass.isDeclaredInfix
 
     /** Is symbol declared or inherits @experimental? */
-    def isExperimental(using Context): Boolean =
-      self.hasAnnotation(defn.ExperimentalAnnot)
-      || (self.maybeOwner.isClass && self.owner.hasAnnotation(defn.ExperimentalAnnot))
+    def isExperimental(using Context): Boolean = isFeatureAnnotated(defn.ExperimentalAnnot)
+    def isInExperimentalScope(using Context): Boolean = isInFeatureScope(defn.ExperimentalAnnot, _.isExperimental, _.isInExperimentalScope)
 
-    def isInExperimentalScope(using Context): Boolean =
-      def isDefaultArgumentOfExperimentalMethod =
+    /** Is symbol declared or inherits @preview? */
+    def isPreview(using Context): Boolean = isFeatureAnnotated(defn.PreviewAnnot)
+    def isInPreviewScope(using Context): Boolean = isInFeatureScope(defn.PreviewAnnot, _.isPreview, _.isInPreviewScope)
+
+    private inline def isFeatureAnnotated(checkAnnotaton: ClassSymbol)(using Context): Boolean =
+      self.hasAnnotation(checkAnnotaton)
+      || (self.maybeOwner.isClass && self.owner.hasAnnotation(checkAnnotaton))
+
+    private inline def isInFeatureScope(checkAnnotation: ClassSymbol, checkSymbol: Symbol => Boolean, checkOwner: Symbol => Boolean)(using Context): Boolean =
+      def isDefaultArgumentOfCheckedMethod =
         self.name.is(DefaultGetterName)
         && self.owner.isClass
         && {
           val overloads = self.owner.asClass.membersNamed(self.name.firstPart)
           overloads.filterWithFlags(HasDefaultParams, EmptyFlags) match
-            case denot: SymDenotation => denot.symbol.isExperimental
+            case denot: SymDenotation => checkSymbol(denot.symbol)
             case _ => false
         }
-      self.hasAnnotation(defn.ExperimentalAnnot)
-      || isDefaultArgumentOfExperimentalMethod
-      || (!self.is(Package) && self.owner.isInExperimentalScope)
+      self.hasAnnotation(checkAnnotation)
+      || isDefaultArgumentOfCheckedMethod
+      || (!self.is(Package) && checkOwner(self.owner))
 
     /** The declared self type of this class, as seen from `site`, stripping
     *  all refinements for opaque types.

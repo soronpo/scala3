@@ -4,7 +4,8 @@ title: "Named Tuples"
 nightlyOf: https://docs.scala-lang.org/scala3/reference/other-new-features/named-tuples.html
 ---
 
-Starting in Scala 3.6, the elements of a tuple can be named. Example:
+Starting in Scala 3.7, the elements of a tuple can be named.
+Example:
 ```scala
 type Person = (name: String, age: Int)
 val Bob: Person = (name = "Bob", age = 33)

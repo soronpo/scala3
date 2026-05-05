@@ -4,8 +4,6 @@
 package dotty.tools
 package dotc.classpath
 
-import scala.language.unsafeNulls
-
 import java.io.{File => JFile, FileFilter}
 import java.net.URL
 import dotty.tools.io.AbstractFile
@@ -40,7 +38,9 @@ object FileUtils {
      * Safe method returning a sequence containing one URL representing this file, when underlying file exists,
      * and returning given default value in other case
      */
-    def toURLs(default: => Seq[URL] = Seq.empty): Seq[URL] = if (file.file == null) default else Seq(file.toURL)
+    def toURLs(default: => Seq[URL] = Seq.empty): Seq[URL] =
+      val url = file.toURL
+      if (url == null) default else Seq(url)
 
     /**
      * Returns if there is an existing sibling `.tasty` file.

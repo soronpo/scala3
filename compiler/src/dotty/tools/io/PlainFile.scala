@@ -6,15 +6,13 @@
 package dotty.tools
 package io
 
-import scala.language.unsafeNulls
-
 import java.io.{InputStream, OutputStream}
 import java.nio.file.{InvalidPathException, Paths}
 
 /** ''Note:  This library is considered experimental and should not be used unless you know what you are doing.'' */
 class PlainDirectory(givenPath: Directory) extends PlainFile(givenPath) {
   override val isDirectory: Boolean = true
-  override def iterator(): Iterator[PlainFile] = givenPath.list.filter(_.exists).map(new PlainFile(_))
+  override def iterator: Iterator[PlainFile] = givenPath.list.filter(_.exists).map(new PlainFile(_))
 }
 
 /** This class implements an abstract file backed by a File.
@@ -99,7 +97,7 @@ class PlainFile(val givenPath: Path) extends AbstractFile {
    * argument "directory" tells whether to look for a directory or
    * or a regular file.
    */
-  def lookupName(name: String, directory: Boolean): AbstractFile = {
+  def lookupName(name: String, directory: Boolean): AbstractFile | Null = {
     val child = givenPath / name
     if directory then
       if child.isDirectory /* IO! */ then

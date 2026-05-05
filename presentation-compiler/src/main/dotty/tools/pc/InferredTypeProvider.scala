@@ -3,15 +3,16 @@ package dotty.tools.pc
 import java.nio.file.Paths
 
 import scala.annotation.tailrec
-import scala.meta.internal.metals.ReportContext
 import scala.meta.pc.OffsetParams
 import scala.meta.pc.PresentationCompilerConfig
 import scala.meta.pc.SymbolSearch
+import scala.meta.pc.reports.ReportContext
 import scala.meta as m
 
 import dotty.tools.dotc.ast.Trees.*
 import dotty.tools.dotc.ast.untpd
 import dotty.tools.dotc.core.Contexts.*
+import dotty.tools.dotc.core.Flags.*
 import dotty.tools.dotc.core.NameOps.*
 import dotty.tools.dotc.core.Names.*
 import dotty.tools.dotc.core.Symbols.*
@@ -29,22 +30,21 @@ import dotty.tools.pc.utils.InteractiveEnrichments.*
 import org.eclipse.lsp4j.TextEdit
 import org.eclipse.lsp4j as l
 
-/**
- * Tries to calculate edits needed to insert the inferred type annotation
- * in all the places that it is possible such as:
- * - value or variable declaration
- * - methods
- * - pattern matches
- * - for comprehensions
- * - lambdas
+/** Tries to calculate edits needed to insert the inferred type annotation in
+ *  all the places that it is possible such as:
+ *    - value or variable declaration
+ *    - methods
+ *    - pattern matches
+ *    - for comprehensions
+ *    - lambdas
  *
- * The provider will not check if the type does not exist, since there is no way to
- * get that data from the presentation compiler. The actual check is being done via
- * scalameta parser in InsertInferredType code action.
+ *  The provider will not check if the type does not exist, since there is no
+ *  way to get that data from the presentation compiler. The actual check is
+ *  being done via scalameta parser in InsertInferredType code action.
  *
- * @param params position and actual source
- * @param driver Scala 3 interactive compiler driver
- * @param config presentation compielr configuration
+ *  @param params position and actual source
+ *  @param driver Scala 3 interactive compiler driver
+ *  @param config presentation compielr configuration
  */
 final class InferredTypeProvider(
     params: OffsetParams,
@@ -71,11 +71,11 @@ final class InferredTypeProvider(
     driver.run(uri, source)
     val unit = driver.currentCtx.run.nn.units.head
     val pos = driver.sourcePosition(params)
+    val newctx = driver.currentCtx.fresh.setCompilationUnit(unit)
     val path =
-      Interactive.pathTo(driver.openedTrees(uri), pos)(using driver.currentCtx)
-
-    given locatedCtx: Context = driver.localContext(params)
-    val indexedCtx = IndexedContext(locatedCtx)
+      Interactive.pathTo(newctx.compilationUnit.tpdTree, pos.span)(using newctx)
+    val indexedCtx = IndexedContext(pos, path, newctx)
+    import indexedCtx.ctx
     val autoImportsGen = AutoImports.generator(
       pos,
       sourceText,
@@ -89,19 +89,25 @@ final class InferredTypeProvider(
       sourceText.substring(0, nameEnd).nn +
         sourceText.substring(tptEnd + 1, sourceText.length())
 
+    def widenJavaEnumSingleton(tpe: Type)(using Context): Type = tpe match
+      case tp: TermRef if tp.termSymbol.isAllOf(JavaEnum) =>
+        tp.widen
+      case _ => tpe
+
     def optDealias(tpe: Type): Type =
       def isInScope(tpe: Type): Boolean =
         tpe match
           case tref: TypeRef =>
             indexedCtx.lookupSym(
-              tref.currentSymbol
+              tref.currentSymbol,
+              Some(tref.prefix)
             ) == IndexedContext.Result.InScope
           case AppliedType(tycon, args) =>
             isInScope(tycon) && args.forall(isInScope)
           case _ => true
-      if isInScope(tpe)
-      then tpe
-      else tpe.deepDealias
+      val widened = widenJavaEnumSingleton(tpe)
+      if isInScope(widened) then widened
+      else widened.deepDealiasAndSimplify
 
     val printer = ShortenedTypePrinter(
       symbolSearch,
@@ -112,8 +118,8 @@ final class InferredTypeProvider(
     def imports: List[TextEdit] =
       printer.imports(autoImportsGen)
 
-    def printType(tpe: Type): String =
-      printer.tpe(tpe)
+    def printTypeAscription(tpe: Type, spaceBefore: Boolean = false): String =
+      (if spaceBefore then " : " else ": ") + printer.tpe(tpe)
 
     path.headOption match
       /* `val a = 1` or `var b = 2`
@@ -124,7 +130,7 @@ final class InferredTypeProvider(
        *     turns into
        * `.map((a: Int) => a + a)`
        */
-      case Some(vl @ ValDef(sym, tpt, rhs)) =>
+      case Some(vl @ ValDef(name, tpt, rhs)) =>
         val isParam = path match
           case head :: next :: _ if next.symbol.isAnonymousFunction => true
           case head :: (b @ Block(stats, expr)) :: next :: _
@@ -136,9 +142,10 @@ final class InferredTypeProvider(
           val endPos =
             findNamePos(sourceText, vl, keywordOffset).endPos.toLsp
           adjustOpt.foreach(adjust => endPos.setEnd(adjust.adjustedEndPos))
+          val spaceBefore = name.isOperatorName
           new TextEdit(
             endPos,
-            ": " + printType(optDealias(tpt.typeOpt)) + {
+            printTypeAscription(optDealias(tpt.typeOpt), spaceBefore) + {
               if withParens then ")" else ""
             }
           )
@@ -181,8 +188,7 @@ final class InferredTypeProvider(
           typeNameEdit ::: imports
 
         rhs match
-          case t: Tree[?]
-              if t.typeOpt.isErroneous && retryType && !tpt.sourcePos.span.isZeroExtent =>
+          case t: Tree[?] if !tpt.sourcePos.span.isZeroExtent =>
             inferredTypeEdits(
               Some(
                 AdjustTypeOpts(
@@ -192,12 +198,11 @@ final class InferredTypeProvider(
               )
             )
           case _ => simpleType
-        end match
       /* `def a[T](param : Int) = param`
        *     turns into
        * `def a[T](param : Int): Int = param`
        */
-      case Some(df @ DefDef(name, _, tpt, rhs)) =>
+      case Some(df @ DefDef(name, paramss, tpt, rhs)) =>
         def typeNameEdit =
           /* NOTE: In Scala 3.1.3, `List((1,2)).map((<<a>>,b) => ...)`
            * turns into `List((1,2)).map((:Inta,b) => ...)`,
@@ -208,10 +213,12 @@ final class InferredTypeProvider(
             if tpt.endPos.end > df.namePos.end then tpt.endPos.toLsp
             else df.namePos.endPos.toLsp
 
+          val spaceBefore = name.isOperatorName && paramss.isEmpty
+
           adjustOpt.foreach(adjust => end.setEnd(adjust.adjustedEndPos))
           new TextEdit(
             end,
-            ": " + printType(optDealias(tpt.typeOpt))
+            printTypeAscription(optDealias(tpt.typeOpt), spaceBefore)
           )
         end typeNameEdit
 
@@ -220,8 +227,7 @@ final class InferredTypeProvider(
           while i >= 0 && sourceText(i) != ':' do i -= 1
           i
         rhs match
-          case t: Tree[?]
-              if t.typeOpt.isErroneous && retryType && !tpt.sourcePos.span.isZeroExtent =>
+          case t: Tree[?] if !tpt.sourcePos.span.isZeroExtent =>
             inferredTypeEdits(
               Some(
                 AdjustTypeOpts(
@@ -239,9 +245,10 @@ final class InferredTypeProvider(
        */
       case Some(bind @ Bind(name, body)) =>
         def baseEdit(withParens: Boolean) =
+          val spaceBefore = name.isOperatorName
           new TextEdit(
             bind.endPos.toLsp,
-            ": " + printType(optDealias(body.typeOpt)) + {
+            printTypeAscription(optDealias(body.typeOpt), spaceBefore) + {
               if withParens then ")" else ""
             }
           )
@@ -272,9 +279,10 @@ final class InferredTypeProvider(
        * `for(t: Int <- 0 to 10)`
        */
       case Some(i @ Ident(name)) =>
+        val spaceBefore = name.isOperatorName
         val typeNameEdit = new TextEdit(
           i.endPos.toLsp,
-          ": " + printType(optDealias(i.typeOpt.widen))
+          printTypeAscription(optDealias(i.typeOpt.widen), spaceBefore)
         )
         typeNameEdit :: imports
 
@@ -287,9 +295,7 @@ final class InferredTypeProvider(
       text: String,
       tree: untpd.NamedDefTree,
       kewordOffset: Int
-  )(using
-      Context
-  ): SourcePosition =
+  )(using Context): SourcePosition =
     val realName = tree.name.stripModuleClassSuffix.toString.toList
 
     // `NamedDefTree.namePos` is incorrect for bacticked names

@@ -13,7 +13,6 @@ import ast.{untpd, tpd}
 import Implicits.{hasExtMethod, Candidate}
 import java.util.{Timer, TimerTask}
 import collection.mutable
-import scala.util.control.NonFatal
 import cc.isCaptureChecking
 
 /** This trait defines the method `importSuggestionAddendum` that adds an addendum
@@ -69,7 +68,7 @@ trait ImportSuggestions:
           && !(root.name == nme.raw.BAR && ctx.settings.scalajs.value && root == JSDefinitions.jsdefn.PseudoUnionModule)
       }
 
-    def nestedRoots(site: Type)(using Context): List[Symbol] =
+    def nestedRoots(site: Type, parentSymbols: Set[Symbol])(using Context): List[Symbol] =
       val seenNames = mutable.Set[Name]()
       site.baseClasses.flatMap { bc =>
         bc.info.decls.filter { dcl =>
@@ -79,34 +78,37 @@ trait ImportSuggestions:
         }
       }
 
-    def rootsStrictlyIn(ref: Type)(using Context): List[TermRef] =
+    def rootsStrictlyIn(ref: Type, parentSymbols: Set[Symbol] = Set())(using Context): List[TermRef] =
       val site = ref.widen
       val refSym = site.typeSymbol
-      val nested =
-        if refSym.is(Package) then
-          if refSym == defn.EmptyPackageClass       // Don't search the empty package
-              || refSym == defn.JavaPackageClass     // As an optimization, don't search java...
-              || refSym == defn.JavaLangPackageClass // ... or java.lang.
-          then Nil
-          else refSym.info.decls.filter(lookInside)
-        else if refSym.infoOrCompleter.isInstanceOf[StubInfo] then
-          Nil // Don't chase roots that do not exist
-        else
-          if !refSym.is(Touched) then
-            refSym.ensureCompleted() // JavaDefined is reliably known only after completion
-          if refSym.is(JavaDefined) then Nil
-          else nestedRoots(site)
-      nested
-        .map(mbr => TermRef(ref, mbr.asTerm))
-        .flatMap(rootsIn)
-        .toList
+      if parentSymbols.contains(refSym) then Nil
+      else
+        val nested =
+          if refSym.is(Package) then
+            if refSym == defn.EmptyPackageClass       // Don't search the empty package
+                || refSym == defn.JavaPackageClass     // As an optimization, don't search java...
+                || refSym == defn.JavaLangPackageClass // ... or java.lang.
+            then Nil
+            else refSym.info.decls.filter(lookInside)
+          else if refSym.infoOrCompleter.isInstanceOf[StubInfo] then
+            Nil // Don't chase roots that do not exist
+          else
+            if !refSym.is(Touched) then
+              refSym.ensureCompleted() // JavaDefined is reliably known only after completion
+            if refSym.is(JavaDefined) then Nil
+            else nestedRoots(site, parentSymbols)
+        val newParentSymbols = parentSymbols + refSym
+        nested
+          .map(mbr => TermRef(ref, mbr.asTerm))
+          .flatMap(rootsIn(_, newParentSymbols))
+          .toList
 
-    def rootsIn(ref: TermRef)(using Context): List[TermRef] =
+    def rootsIn(ref: TermRef, parentSymbols: Set[Symbol] = Set())(using Context): List[TermRef] =
       if seen.contains(ref) then Nil
       else
         implicitsDetailed.println(i"search for suggestions in ${ref.symbol.fullName}")
         seen += ref
-        ref :: rootsStrictlyIn(ref)
+        ref :: rootsStrictlyIn(ref, parentSymbols)
 
     def rootsOnPath(tp: Type)(using Context): List[TermRef] = tp match
       case ref: TermRef => rootsIn(ref) ::: rootsOnPath(ref.prefix)
@@ -124,7 +126,7 @@ trait ImportSuggestions:
               .filter(lookInside(_))
               .flatMap(sym => rootsIn(sym.termRef))
         val imported =
-          if ctx.importInfo eqn ctx.outer.importInfo then Nil
+          if ctx.importInfo eq ctx.outer.importInfo then Nil
           else ctx.importInfo.nn.importSym.info match
             case ImportType(expr) => rootsOnPath(expr.tpe)
             case _ => Nil
@@ -182,7 +184,7 @@ trait ImportSuggestions:
             // To regain precision, test both sides separately.
             test(ViewProto(argType, rt1)) || test(ViewProto(argType, rt2))
           case pt: ViewProto =>
-            pt.isMatchedBy(ref)
+            pt.isMatchedBy(ref, keepConstraint = false)
           case _ =>
             normalize(ref, pt) <:< pt
         test(pt)
@@ -253,7 +255,7 @@ trait ImportSuggestions:
         match
           case (Nil, partials) => (extensionImports, partials)
           case givenImports => givenImports
-    catch case NonFatal(ex) =>
+    catch case ex: Exception =>
       if ctx.settings.Ydebug.value then
         println("caught exception when searching for suggestions")
         ex.printStackTrace()
@@ -333,7 +335,7 @@ trait ImportSuggestions:
         if ref.symbol.is(ExtensionMethod) then
           s"${ctx.printer.toTextPrefixOf(ref).show}${ref.symbol.name}"
         else
-          ctx.printer.toTextRef(ref).show
+         ref.showRef
       s"  import $imported"
     val suggestions = suggestedRefs
       .zip(suggestedRefs.map(importString))

@@ -14,28 +14,24 @@
 -- [E204] Syntax Warning: tests/neg/infix-named-args.scala:2:15 --------------------------------------------------------
 2 |  def f = 42 + (x = 1) // error // werror
   |               ^^^^^^^
-  |Ambigious syntax: this infix call argument list is interpreted as single named tuple argument, not as an named arguments list.
-  |This can be rewritten automatically under -rewrite -source 3.6-migration.
-  |
-  | longer explanation available when compiling with `-explain`
+  |Deprecated syntax: infix named arguments lists are deprecated; since 3.7 it is interpreted as a single named tuple argument.
+  |To avoid this warning, either remove the argument names or use dotted selection.
+  |This can be rewritten automatically under -rewrite -source 3.7-migration.
 -- [E204] Syntax Warning: tests/neg/infix-named-args.scala:5:26 --------------------------------------------------------
 5 |  def g = new C() `multi` (x = 42, y = 27) // werror
   |                          ^^^^^^^^^^^^^^^^
-  |Ambigious syntax: this infix call argument list is interpreted as single named tuple argument, not as an named arguments list.
-  |This can be rewritten automatically under -rewrite -source 3.6-migration.
-  |
-  | longer explanation available when compiling with `-explain`
+  |Deprecated syntax: infix named arguments lists are deprecated; since 3.7 it is interpreted as a single named tuple argument.
+  |To avoid this warning, either remove the argument names or use dotted selection.
+  |This can be rewritten automatically under -rewrite -source 3.7-migration.
 -- [E204] Syntax Warning: tests/neg/infix-named-args.scala:6:21 --------------------------------------------------------
 6 |  def h = new C() ** (x = 42, y = 27) // werror
   |                     ^^^^^^^^^^^^^^^^
-  |Ambigious syntax: this infix call argument list is interpreted as single named tuple argument, not as an named arguments list.
-  |This can be rewritten automatically under -rewrite -source 3.6-migration.
-  |
-  | longer explanation available when compiling with `-explain`
+  |Deprecated syntax: infix named arguments lists are deprecated; since 3.7 it is interpreted as a single named tuple argument.
+  |To avoid this warning, either remove the argument names or use dotted selection.
+  |This can be rewritten automatically under -rewrite -source 3.7-migration.
 -- [E204] Syntax Warning: tests/neg/infix-named-args.scala:13:18 -------------------------------------------------------
 13 |  def f = this ** (x = 2) // werror
    |                  ^^^^^^^
-   |Ambigious syntax: this infix call argument list is interpreted as single named tuple argument, not as an named arguments list.
-   |This can be rewritten automatically under -rewrite -source 3.6-migration.
-   |
-   | longer explanation available when compiling with `-explain`
+   |Deprecated syntax: infix named arguments lists are deprecated; since 3.7 it is interpreted as a single named tuple argument.
+   |To avoid this warning, either remove the argument names or use dotted selection.
+   |This can be rewritten automatically under -rewrite -source 3.7-migration.

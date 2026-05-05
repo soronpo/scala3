@@ -66,19 +66,30 @@ class Constructors extends MiniPhase with IdentityDenotTransformer { thisPhase =
     if (sym.exists && sym.owner.isClass && mightBeDropped(sym)) {
       val owner = sym.owner.asClass
 
-        tree match {
-          case Ident(_) | Select(This(_), _) =>
-            def inConstructor = {
-              val method = ctx.owner.enclosingMethod
-              method.isPrimaryConstructor && ctx.owner.enclosingClass == owner
+      tree match {
+        case Ident(_) | Select(This(_), _) =>
+          val method = ctx.owner.enclosingMethod
+          // template exprs are moved below to constructor; lifted anonfun takes captured env as an arg
+          def checkAnonFun(meth: Symbol): Boolean =
+            meth.isAnonymousFunction
+            && {
+              val owner = meth.owner
+                 owner.isLocalDummy
+              || owner.owner == sym.owner && !owner.isOneOf(MethodOrLazy)
+              || checkAnonFun(owner.enclosingMethod)
             }
-            if (inConstructor &&
-                (sym.is(ParamAccessor) || seenPrivateVals.contains(sym))) {
-              // used inside constructor, accessed on this,
-              // could use constructor argument instead, no need to retain field
-            }
-            else retain()
-          case _ => retain()
+          // restriction on module because lambdalift doesn't transform correctly (to do)
+          val inConstructor =
+               (method.isPrimaryConstructor || !sym.owner.is(Module) && checkAnonFun(method))
+            && ctx.owner.enclosingClass == sym.owner
+          val noField =
+               inConstructor
+            && (sym.is(ParamAccessor) || seenPrivateVals.contains(sym))
+            // used inside constructor, accessed on this,
+            // could use constructor argument instead, no need to retain field
+          if !noField then
+            retain()
+        case _ => retain()
       }
     }
   }
@@ -155,7 +166,7 @@ class Constructors extends MiniPhase with IdentityDenotTransformer { thisPhase =
         case Ident(_) | Select(This(_), _) =>
           var sym = tree.symbol
           def isOverridableSelect = tree.isInstanceOf[Select] && !sym.isEffectivelyFinal
-          def switchOutsideSupercall = !sym.is(Mutable) && !isOverridableSelect
+          def switchOutsideSupercall = !sym.isMutableVarOrAccessor && !isOverridableSelect
             // If true, switch to constructor parameters also in the constructor body
             // that follows the super call.
             // Variables need to go through the getter since they might have been updated.

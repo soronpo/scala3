@@ -1,14 +1,17 @@
 package dotty.tools.pc
 
 import java.nio.file.Paths
+import java.util.Optional
 
 import scala.collection.mutable
 import scala.jdk.CollectionConverters.*
-import scala.meta.internal.metals.ReportContext
 import scala.meta.internal.pc.AutoImportsResultImpl
 import scala.meta.pc.*
+import scala.meta.pc.reports.ReportContext
 
 import dotty.tools.dotc.ast.tpd.*
+import dotty.tools.dotc.core.Flags.Method
+import dotty.tools.dotc.core.StdNames.*
 import dotty.tools.dotc.core.Symbols.*
 import dotty.tools.dotc.interactive.Interactive
 import dotty.tools.dotc.interactive.InteractiveDriver
@@ -41,11 +44,18 @@ final class AutoImportsProvider(
     val newctx = driver.currentCtx.fresh.setCompilationUnit(unit)
     val path =
       Interactive.pathTo(newctx.compilationUnit.tpdTree, pos.span)(using newctx)
-
-    val indexedContext = IndexedContext(
-      Interactive.contextOfPath(path)(using newctx)
-    )
+    val indexedContext = IndexedContext(pos, path, newctx)
     import indexedContext.ctx
+
+    def correctInTreeContext(sym: Symbol) = path match
+      case (_: Ident) :: (sel: Select) :: _ =>
+        sym.info.allMembers.exists(_.name == sel.name)
+      case (_: Ident) :: (_: Apply) :: _ if !sym.is(Method) =>
+        def applyInObject =
+          sym.companionModule.info.allMembers.exists(_.name == nme.apply)
+        def applyInClass = sym.info.allMembers.exists(_.name == nme.apply)
+        applyInClass || applyInObject
+      case _ => true
 
     val isSeen = mutable.Set.empty[String]
     val symbols = List.newBuilder[Symbol]
@@ -63,7 +73,7 @@ final class AutoImportsProvider(
     if isExtension then
       search.searchMethods(name, buildTargetIdentifier, visitor)
     else search.search(name, buildTargetIdentifier, visitor)
-    val results = symbols.result.filter(isExactMatch(_, name))
+    val results = symbols.result().filter(isExactMatch(_, name))
 
     if results.nonEmpty then
       val correctedPos =
@@ -83,20 +93,34 @@ final class AutoImportsProvider(
                 text,
                 tree,
                 unit.comments,
-                indexedContext.importContext,
+                indexedContext,
                 config
               )
             (sym: Symbol) => generator.forSymbol(sym)
         end match
-      end mkEdit
 
-      for
-        sym <- results
-        edits <- mkEdit(sym)
-      yield AutoImportsResultImpl(
-        sym.owner.showFullName,
-        edits.asJava
-      )
+      val all =
+        for
+          sym   <- results
+          edits <- mkEdit(sym)
+        yield (
+          AutoImportsResultImpl(
+            sym.owner.showFullName,
+            edits.asJava,
+            Optional.of(SemanticdbSymbols.symbolName(sym))
+          ),
+          sym
+        )
+
+      all match
+        case (onlyResult, _) :: Nil => List(onlyResult)
+        case Nil => Nil
+        case moreResults =>
+          val moreExact = moreResults.filter { case (_, sym) =>
+            correctInTreeContext(sym)
+          }
+          if moreExact.nonEmpty then moreExact.map(_._1)
+          else moreResults.map(_._1)
     else List.empty
     end if
   end autoImports

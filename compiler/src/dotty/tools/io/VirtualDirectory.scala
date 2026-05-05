@@ -4,8 +4,6 @@
 
 package dotty.tools.io
 
-import scala.language.unsafeNulls
-
 import scala.collection.mutable
 import java.io.{InputStream, OutputStream}
 /**
@@ -30,7 +28,7 @@ extends AbstractFile {
   override def isVirtual: Boolean = true
   val lastModified: Long = System.currentTimeMillis
 
-  override def jpath: JPath = null
+  override def jpath: JPath | Null = null
   override def input: InputStream = sys.error("directories cannot be read")
   override def output: OutputStream = sys.error("directories cannot be written")
 
@@ -43,9 +41,9 @@ extends AbstractFile {
 
   // the toList is so that the directory may continue to be
   // modified while its elements are iterated
-  def iterator(): Iterator[AbstractFile] = files.values.toList.iterator
+  def iterator: Iterator[AbstractFile] = files.values.toList.iterator
 
-  override def lookupName(name: String, directory: Boolean): AbstractFile =
+  override def lookupName(name: String, directory: Boolean): AbstractFile | Null =
     (files get name filter (_.isDirectory == directory)).orNull
 
   override def fileNamed(name: String): AbstractFile =

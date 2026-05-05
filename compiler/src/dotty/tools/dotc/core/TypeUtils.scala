@@ -23,13 +23,6 @@ class TypeUtils:
     def isPrimitiveValueType(using Context): Boolean =
       self.classSymbol.isPrimitiveValueClass
 
-    def isErasedClass(using Context): Boolean =
-      val cls = self.underlyingClassRef(refinementOK = true).typeSymbol
-      cls.is(Flags.Erased)
-       && (cls != defn.SingletonClass || Feature.enabled(Feature.modularity))
-         // Singleton counts as an erased class only under x.modularity
-
-
     /** Is this type a checked exception? This is the case if the type
      *  derives from Exception but not from RuntimeException. According to
      *  that definition Throwable is unchecked. That makes sense since you should
@@ -53,6 +46,11 @@ class TypeUtils:
       case ps => ps.reduceLeft(AndType(_, _))
     }
 
+    def widenSkolems(using Context): Type =
+      val widenSkolemsMap = new TypeMap:
+        def apply(tp: Type) = mapOver(tp.widenSkolem)
+      widenSkolemsMap(self)
+
     /** The element types of this tuple type, which can be made up of EmptyTuple, TupleX and `*:` pairs
      */
     def tupleElementTypes(using Context): Option[List[Type]] =
@@ -68,7 +66,7 @@ class TypeUtils:
     def tupleElementTypesUpTo(bound: Int, normalize: Boolean = true)(using Context): Option[List[Type]] =
       def recur(tp: Type, bound: Int): Option[List[Type]] =
         if bound < 0 then Some(Nil)
-        else (if normalize then tp.normalized else tp).dealias match
+        else (if normalize then tp.dealias.normalized else tp).dealias match
           case AppliedType(tycon, hd :: tl :: Nil) if tycon.isRef(defn.PairClass) =>
             recur(tl, bound - 1).map(hd :: _)
           case tp: AppliedType if defn.isTupleNType(tp) && normalize =>
@@ -127,19 +125,36 @@ class TypeUtils:
         case Some(types) => TypeOps.nestedPairs(types)
         case None => throw new AssertionError("not a tuple")
 
-    def namedTupleElementTypesUpTo(bound: Int, normalize: Boolean = true)(using Context): List[(TermName, Type)] =
+    def namedTupleElementTypesUpTo(bound: Int, derived: Boolean, normalize: Boolean = true)(using Context): List[(TermName, Type)] =
+      def extractNamesTypes(nmes: Type, vals: Type): List[(TermName, Type)] =
+        val names = nmes.tupleElementTypesUpTo(bound, normalize).getOrElse(Nil).map(_.dealias).map:
+          case ConstantType(Constant(str: String)) => str.toTermName
+          case t => throw TypeError(em"Malformed NamedTuple: names must be string types, but $t was found.")
+        val values = vals.tupleElementTypesUpTo(bound, normalize).getOrElse(Nil)
+        names.zip(values)
+
       (if normalize then self.normalized else self).dealias match
-        case defn.NamedTuple(nmes, vals) =>
-          val names = nmes.tupleElementTypesUpTo(bound, normalize).getOrElse(Nil).map(_.dealias).map:
-            case ConstantType(Constant(str: String)) => str.toTermName
-            case t => throw TypeError(em"Malformed NamedTuple: names must be string types, but $t was found.")
-          val values = vals.tupleElementTypesUpTo(bound, normalize).getOrElse(Nil)
-          names.zip(values)
+        // for desugaring and printer, ignore derived types to avoid infinite recursion in NamedTuple.unapply
+        case defn.NamedTupleDirect(nmes, vals) => extractNamesTypes(nmes, vals)
+        case t if !derived => Nil
+        // default cause, used for post-typing
+        case defn.NamedTuple(nmes, vals) => extractNamesTypes(nmes, vals)
         case t =>
           Nil
 
-    def namedTupleElementTypes(using Context): List[(TermName, Type)] =
-      namedTupleElementTypesUpTo(Int.MaxValue)
+    def namedTupleElementTypes(derived: Boolean)(using Context): List[(TermName, Type)] =
+      namedTupleElementTypesUpTo(Int.MaxValue, derived)
+
+    /** If this is a generic tuple type with arity <= MaxTupleArity, return the
+     *  corresponding TupleN type, otherwise return this.
+     */
+    def normalizedTupleType(using Context): Type =
+      if self.isGenericTuple then
+        self.tupleElementTypes match
+          case Some(elems) if elems.size <= Definitions.MaxTupleArity => defn.tupleType(elems)
+          case _ => self
+      else
+        self
 
     def isNamedTupleType(using Context): Boolean = self match
       case defn.NamedTuple(_, _) => true
@@ -207,14 +222,21 @@ class TypeUtils:
           tpe
       self match
       case tpe: NamedType =>
-        if tpe.symbol.isRoot then
-          tpe
+        if tpe.prefix.refersToPackage then
+          tryInsert(tpe, tpe.prefix.packageClass)
         else
-          tpe.prefix match
-            case pre: ThisType if pre.cls.is(Package) => tryInsert(tpe, pre.cls)
-            case pre: TermRef if pre.symbol.is(Package) => tryInsert(tpe, pre.symbol.moduleClass)
-            case _ => tpe
+          tpe
       case tpe => tpe
+
+    /** If this type refers to a package, the class representing that package,
+     *  otherwise NoSymbol.
+     */
+    def packageClass(using Context): Symbol = self.stripped match
+      case self: ThisType if self.cls.is(Package) => self.cls
+      case self: TermRef if self.symbol.is(Package) => self.symbol.moduleClass
+      case _ => NoSymbol
+
+    def refersToPackage(using Context): Boolean = packageClass.exists
 
     /** Strip all outer refinements off this type */
     def stripRefinement: Type = self match
@@ -244,6 +266,10 @@ class TypeUtils:
         recur(constr.info)
 
       self.decl(nme.CONSTRUCTOR).altsWith(isApplicable).map(_.symbol)
+
+    def showRef(using Context): String = self match
+      case self: SingletonType => ctx.printer.toTextRef(self).show
+      case _ => self.show
 
 end TypeUtils
 

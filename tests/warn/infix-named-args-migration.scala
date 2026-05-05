@@ -1,4 +1,5 @@
-//> using options -source:3.6-migration
+//> using options -source:3.7-migration
+
 class C:
   def f = 42 + (x = 1) // warn // interpreted as 42.+(x = 1) under migration, x is a valid synthetic parameter name
   def multi(x: Int, y: Int): Int = x + y

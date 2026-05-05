@@ -4,8 +4,6 @@
 package dotty.tools
 package dotc.classpath
 
-import scala.language.unsafeNulls
-
 import java.net.URL
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.immutable.ArraySeq
@@ -22,9 +20,9 @@ import dotty.tools.io.{ AbstractFile, ClassPath, ClassRepresentation, EfficientC
  * @param aggregates classpath instances containing entries which this class processes
  */
 case class AggregateClassPath(aggregates: Seq[ClassPath]) extends ClassPath {
-  override def findClassFile(className: String): Option[AbstractFile] = {
+  override def findClassFileAndModuleFile(className: String, findModule: Boolean): Option[(AbstractFile, Option[AbstractFile])] = {
     val (pkg, _) = PackageNameUtils.separatePkgAndClassNames(className)
-    aggregatesForPackage(PackageName(pkg)).iterator.map(_.findClassFile(className)).collectFirst {
+    aggregatesForPackage(PackageName(pkg)).iterator.map(_.findClassFileAndModuleFile(className, findModule)).collectFirst {
       case Some(x) => x
     }
   }

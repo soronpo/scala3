@@ -1,5 +1,6 @@
 package scala.runtime
 
+import language.experimental.captureChecking
 import java.util.concurrent.CountDownLatch
 
 import scala.annotation.*
@@ -26,18 +27,19 @@ object LazyVals {
   }
 
   private val base: Int = {
-    val processors = java.lang.Runtime.getRuntime.nn.availableProcessors()
-    8 * processors * processors
+    val processors = java.lang.Runtime.getRuntime.availableProcessors()
+    val rawSize = 8 * processors * processors
+    //find the next power of 2
+    1 << (32 - Integer.numberOfLeadingZeros(rawSize - 1))
   }
+
+  private val mask: Int = base - 1
 
   private val monitors: Array[Object] =
     Array.tabulate(base)(_ => new Object)
 
   private def getMonitor(obj: Object, fieldId: Int = 0) = {
-    var id = (java.lang.System.identityHashCode(obj) + fieldId) % base
-
-    if (id < 0) id += base
-    monitors(id)
+    monitors((java.lang.System.identityHashCode(obj) + fieldId) & mask)
   }
 
   private final val LAZY_VAL_MASK = 3L
@@ -96,13 +98,13 @@ object LazyVals {
       println(s"CAS($t, $offset, $e, $v, $ord)")
     val mask = ~(LAZY_VAL_MASK << ord * BITS_PER_LAZY_VAL)
     val n = (e & mask) | (v.toLong << (ord * BITS_PER_LAZY_VAL))
-    unsafe.compareAndSwapLong(t, offset, e, n)
+    unsafe.compareAndSwapLong(t, offset, e, n): @nowarn("cat=deprecation")
   }
 
   def objCAS(t: Object, offset: Long, exp: Object, n: Object): Boolean = {
     if (debug)
       println(s"objCAS($t, $exp, $n)")
-    unsafe.compareAndSwapObject(t, offset, exp, n)
+    unsafe.compareAndSwapObject(t, offset, exp, n): @nowarn("cat=deprecation")
   }
 
   def setFlag(t: Object, offset: Long, v: Int, ord: Int): Unit = {
@@ -147,7 +149,7 @@ object LazyVals {
   def get(t: Object, off: Long): Long = {
     if (debug)
       println(s"get($t, $off)")
-    unsafe.getLongVolatile(t, off)
+    unsafe.getLongVolatile(t, off): @nowarn("cat=deprecation")
   }
 
   // kept for backward compatibility

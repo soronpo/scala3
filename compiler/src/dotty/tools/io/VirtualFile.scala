@@ -5,8 +5,6 @@
 
 package dotty.tools.io
 
-import scala.language.unsafeNulls
-
 import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, InputStream, OutputStream }
 
 /** This class implements an in-memory file.
@@ -40,14 +38,33 @@ class VirtualFile(val name: String, override val path: String) extends AbstractF
     this.content = content
   }
 
+  /**
+    * Initializes this instance with the specified path
+    * and a name taken from the last path element.
+    *
+    * @param path the path of the virtual file to be created
+    * @param content the initial contents of the virtual file
+    * @return     the created virtual file
+    */
+  def this(path: JPath, content: Array[Byte]) = {
+    this(path.getFileName().toString(), path.toString())
+    this.content = content
+    this.jpath_ = path
+  }
+
   private var content = Array.emptyByteArray
+
+  private var jpath_ : JPath | Null = null
 
   def absolute: AbstractFile = this
 
-  /** Returns null. */
-  def jpath: JPath = null
+  /** Returns path, which might be a non-existing file or null. */
+  def jpath: JPath | Null = jpath_
 
   override def sizeOption: Option[Int] = Some(content.length)
+
+  /** Always returns true, even if jpath is a non-existing file. */
+  override def exists: Boolean = true
 
   def input : InputStream = new ByteArrayInputStream(content)
 
@@ -88,7 +105,7 @@ class VirtualFile(val name: String, override val path: String) extends AbstractF
    * argument "directory" tells whether to look for a directory or
    * or a regular file.
    */
-  def lookupName(name: String, directory: Boolean): AbstractFile = {
+  def lookupName(name: String, directory: Boolean): AbstractFile | Null = {
     assert(isDirectory, "not a directory '" + this + "'")
     null
   }

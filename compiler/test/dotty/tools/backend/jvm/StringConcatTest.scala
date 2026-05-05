@@ -3,14 +3,14 @@ package dotty.tools.backend.jvm
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.junit.Test
-import scala.tools.asm.Opcodes._
-import org.junit.Assert._
 
-import ASMConverters._
-
+import scala.tools.asm.Opcodes.*
+import org.junit.Assert.*
+import dotty.AsmConverters.*
+import dotty.DottyBytecodeTest
 
 class StringConcatTest extends DottyBytecodeTest {
-  import ASMConverters._
+  import dotty.AsmConverters.*
 
   @Test
   def appendOverloadNoBoxing(): Unit = {
@@ -51,7 +51,7 @@ class StringConcatTest extends DottyBytecodeTest {
 
     checkBCode(code) { dir =>
       def instructions(meth: String): List[Instruction] = {
-        val clsIn = dir.lookupName("C.class", directory = false).input
+        val clsIn = dir.lookupName("C.class", directory = false).nn.input
         val clsNode = loadClassNode(clsIn)
         instructionsFromMethod(getMethod(clsNode, meth))
       }
@@ -61,43 +61,11 @@ class StringConcatTest extends DottyBytecodeTest {
       }
 
       assertEquals(List(
-        "<init>(I)V",
-        "toString()Ljava/lang/String;",
-        "append(Ljava/lang/String;)Ljava/lang/StringBuilder;",
-        "append(Ljava/lang/Object;)Ljava/lang/StringBuilder;",
-        "append(Ljava/lang/Object;)Ljava/lang/StringBuilder;",
-        "append(Z)Ljava/lang/StringBuilder;",
-        "append(C)Ljava/lang/StringBuilder;",
-        "append(I)Ljava/lang/StringBuilder;",
-        "append(I)Ljava/lang/StringBuilder;",
-        "append(I)Ljava/lang/StringBuilder;",
-        "append(F)Ljava/lang/StringBuilder;",
-        "append(J)Ljava/lang/StringBuilder;",
-        "append(D)Ljava/lang/StringBuilder;",
-        "append(Ljava/lang/StringBuffer;)Ljava/lang/StringBuilder;",
-        "append(Ljava/lang/CharSequence;)Ljava/lang/StringBuilder;",
-        "append(Ljava/lang/Object;)Ljava/lang/StringBuilder;", // test that we're not using the [C overload
         "toString()Ljava/lang/String;"),
         invokeNameDesc("t1")
       )
 
       assertEquals(List(
-        "<init>(I)V",
-        "toString()Ljava/lang/String;",
-        "append(Ljava/lang/String;)Ljava/lang/StringBuilder;",
-        "append(Ljava/lang/String;)Ljava/lang/StringBuilder;",
-        "append(Ljava/lang/Object;)Ljava/lang/StringBuilder;",
-        "append(Z)Ljava/lang/StringBuilder;",
-        "append(C)Ljava/lang/StringBuilder;",
-        "append(I)Ljava/lang/StringBuilder;",
-        "append(I)Ljava/lang/StringBuilder;",
-        "append(I)Ljava/lang/StringBuilder;",
-        "append(F)Ljava/lang/StringBuilder;",
-        "append(J)Ljava/lang/StringBuilder;",
-        "append(D)Ljava/lang/StringBuilder;",
-        "append(Ljava/lang/StringBuffer;)Ljava/lang/StringBuilder;",
-        "append(Ljava/lang/CharSequence;)Ljava/lang/StringBuilder;",
-        "append(Ljava/lang/Object;)Ljava/lang/StringBuilder;",
         "toString()Ljava/lang/String;"),
         invokeNameDesc("t2")
       )
@@ -122,7 +90,7 @@ class StringConcatTest extends DottyBytecodeTest {
            chsq: java.lang.CharSequence,
            chrs: Array[Char]) = {
       val s1 = str + obj + v + z + c + b + s + i + f + l + d + sbuf + chsq + chrs
-      val s2 = String.valueOf(obj).nn + str + v + z + c + b + s + i + f + l + d + sbuf + chsq + chrs
+      val s2 = String.valueOf(obj) + str + v + z + c + b + s + i + f + l + d + sbuf + chsq + chrs
       s1 + "//" + s2
     }
     def sbuf = { val r = new java.lang.StringBuffer(); r.append("sbuf"); r }
