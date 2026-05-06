@@ -1,0 +1,34 @@
+{
+  "total_incidents": 296,
+  "import_based": 39,
+  "total_chars_saved": 2295,
+  "by_category": {
+    "call_arg": 96,
+    "match_case": 90,
+    "nested_pattern": 81,
+    "typed_decl": 29
+  },
+  "by_file": {
+    "compiler/ir/src/main/scala/dfhdl/compiler/Equality.scala": 2,
+    "compiler/ir/src/main/scala/dfhdl/compiler/analysis/DFValAnalysis.scala": 5,
+    "compiler/ir/src/main/scala/dfhdl/compiler/analysis/ProcessBlockAnalysis.scala": 1,
+    "compiler/ir/src/main/scala/dfhdl/compiler/ir/Config.scala": 6,
+    "compiler/ir/src/main/scala/dfhdl/compiler/ir/DB.scala": 30,
+    "compiler/ir/src/main/scala/dfhdl/compiler/ir/DFMember.scala": 28,
+    "compiler/ir/src/main/scala/dfhdl/compiler/ir/DFRef.scala": 3,
+    "compiler/ir/src/main/scala/dfhdl/compiler/ir/DFTags.scala": 1,
+    "compiler/ir/src/main/scala/dfhdl/compiler/ir/DFType.scala": 23,
+    "compiler/ir/src/main/scala/dfhdl/compiler/ir/Data.scala": 1,
+    "compiler/ir/src/main/scala/dfhdl/compiler/ir/DataOps.scala": 66,
+    "compiler/ir/src/main/scala/dfhdl/compiler/ir/InitFileFormat.scala": 9,
+    "compiler/ir/src/main/scala/dfhdl/compiler/ir/Meta.scala": 1,
+    "compiler/ir/src/main/scala/dfhdl/compiler/ir/PhysicalNumber.scala": 49,
+    "compiler/ir/src/main/scala/dfhdl/compiler/ir/annotation.scala": 9,
+    "compiler/ir/src/main/scala/dfhdl/compiler/printing/DFDataPrinter.scala": 5,
+    "compiler/ir/src/main/scala/dfhdl/compiler/printing/DFOwnerPrinter.scala": 10,
+    "compiler/ir/src/main/scala/dfhdl/compiler/printing/DFTypePrinter.scala": 3,
+    "compiler/ir/src/main/scala/dfhdl/compiler/printing/DFValPrinter.scala": 18,
+    "compiler/ir/src/main/scala/dfhdl/compiler/printing/Printer.scala": 25,
+    "compiler/ir/src/main/scala/dfhdl/options/PrinterOptions.scala": 1
+  }
+}

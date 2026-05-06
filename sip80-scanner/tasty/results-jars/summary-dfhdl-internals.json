@@ -1,0 +1,17 @@
+{
+  "total_incidents": 17,
+  "import_based": 0,
+  "total_chars_saved": 126,
+  "by_category": {
+    "call_arg": 7,
+    "typed_decl": 10
+  },
+  "by_file": {
+    "internals/src/main/scala/dfhdl/internals/BitVector.scala": 2,
+    "internals/src/main/scala/dfhdl/internals/CommonOps.scala": 1,
+    "internals/src/main/scala/dfhdl/internals/Exact.scala": 1,
+    "internals/src/main/scala/dfhdl/internals/HasClsMetaArgs.scala": 2,
+    "internals/src/main/scala/dfhdl/internals/Inlined.scala": 6,
+    "internals/src/main/scala/dfhdl/internals/helpers.scala": 5
+  }
+}

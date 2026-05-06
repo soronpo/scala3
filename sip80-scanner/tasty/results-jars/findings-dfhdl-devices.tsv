@@ -1,0 +1,6 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+dfhdl-devices	devices/src/main/scala/dfhdl/devices/tinytapeout/TT10.scala	40	12	call_arg	dfhdl.compiler.ir.Config$package$.ClkCfg$.Edge	Rising	11	false	ClkCfg.Edge.Rising
+dfhdl-devices	devices/src/main/scala/dfhdl/devices/tinytapeout/TT10.scala	43	23	call_arg	dfhdl.compiler.ir.ClkRstInclusionPolicy	AlwaysAtTop	22	false	ClkCfg.InclusionPolicy.AlwaysAtTop
+dfhdl-devices	devices/src/main/scala/dfhdl/devices/tinytapeout/TT10.scala	46	12	call_arg	dfhdl.compiler.ir.Config$package$.RstCfg$.Mode	Sync	11	false	RstCfg.Mode.Sync
+dfhdl-devices	devices/src/main/scala/dfhdl/devices/tinytapeout/TT10.scala	47	14	call_arg	dfhdl.compiler.ir.Config$package$.RstCfg$.Active	Low	13	false	RstCfg.Active.Low
+dfhdl-devices	devices/src/main/scala/dfhdl/devices/tinytapeout/TT10.scala	49	23	call_arg	dfhdl.compiler.ir.ClkRstInclusionPolicy	AlwaysAtTop	22	false	RstCfg.InclusionPolicy.AlwaysAtTop

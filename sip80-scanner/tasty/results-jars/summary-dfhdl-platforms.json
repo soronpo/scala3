@@ -1,0 +1,28 @@
+{
+  "total_incidents": 55,
+  "import_based": 13,
+  "total_chars_saved": 357,
+  "by_category": {
+    "call_arg": 49,
+    "default_arg": 2,
+    "match_case": 2,
+    "typed_decl": 2
+  },
+  "by_file": {
+    "platforms/src/main/scala/dfhdl/platforms/devboards/digilent/NexysA7.scala": 1,
+    "platforms/src/main/scala/dfhdl/platforms/devboards/radiona/ULX3S.scala": 1,
+    "platforms/src/main/scala/dfhdl/platforms/devboards/sipeed/TangPrimer20K.scala": 11,
+    "platforms/src/main/scala/dfhdl/platforms/devboards/terasic/Atum_A3_Nano.scala": 5,
+    "platforms/src/main/scala/dfhdl/platforms/devboards/terasic/DECA.scala": 5,
+    "platforms/src/main/scala/dfhdl/platforms/devboards/tinytapeout/TT10.scala": 5,
+    "platforms/src/main/scala/dfhdl/platforms/devices/tinytapeout/TTDevice.scala": 1,
+    "platforms/src/main/scala/dfhdl/platforms/devices/xilinxamd/series7/Device.scala": 1,
+    "platforms/src/main/scala/dfhdl/platforms/devices/xilinxamd/series7/xc7a100tcsg324.scala": 6,
+    "platforms/src/main/scala/dfhdl/platforms/devices/xilinxamd/series7/xc7a35tcpg236.scala": 5,
+    "platforms/src/main/scala/dfhdl/platforms/ips/alteraintel/intel_user_rst_clkgate.scala": 2,
+    "platforms/src/main/scala/dfhdl/platforms/ips/alteraintel/intelclkctrl.scala": 2,
+    "platforms/src/main/scala/dfhdl/platforms/pmods/digilent/Pmod8LD.scala": 1,
+    "platforms/src/main/scala/dfhdl/platforms/pmods/sipeed/PMOD_BTN4x4.scala": 8,
+    "platforms/src/main/scala/dfhdl/platforms/pmods/sipeed/PMOD_LEDx8.scala": 1
+  }
+}

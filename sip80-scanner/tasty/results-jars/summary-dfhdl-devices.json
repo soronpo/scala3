@@ -1,0 +1,11 @@
+{
+  "total_incidents": 5,
+  "import_based": 0,
+  "total_chars_saved": 79,
+  "by_category": {
+    "call_arg": 5
+  },
+  "by_file": {
+    "devices/src/main/scala/dfhdl/devices/tinytapeout/TT10.scala": 5
+  }
+}

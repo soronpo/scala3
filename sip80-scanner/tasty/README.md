@@ -81,10 +81,11 @@ tasty/
   fixtures/expected.json       Expected counts for the fixtures.
   build.sh                     Build the inspector + run.
   check.py                     Compare summary.json to expected.json.
+  detect-tasty-version.py      Read major.minor from a jar's TASTy header.
   results/                     Last run's findings.tsv + summary.json.
   results-jars/                Saved per-library scan summaries.
   out/                         Compiled fixture TASTy.
-  build/                       Compiled inspector classes.
+  build/<version>/             Inspector classes per scala3 minor.
 ```
 
 ## Fixture self-test
@@ -116,6 +117,24 @@ Saved under `results-jars/`. Comparison with Stage A on the same library:
 | `os-lib_3:0.11.3`     | 29 | 129 |   430 | 1,102 |
 | `scalatags_3:0.13.1`  |  2 |   2 |    20 |    18 |
 
+### DFiantHDL (full library, 6 modules, hardware DSL on Scala 3)
+
+| Module                            | Version | Incidents | Chars saved | Import-based |
+|---|---|---:|---:|---:|
+| `dfhdl-core_3`                    | 0.17.0  |   223 | 1,823 |  44 |
+| `dfhdl-internals_3`               | 0.17.0  |    17 |   126 |   0 |
+| `dfhdl-compiler-ir_3`             | 0.17.0  |   296 | 2,295 |  39 |
+| `dfhdl-compiler-stages_3`         | 0.17.0  |   216 | 2,138 |   2 |
+| `dfhdl-platforms_3`               | 0.17.0  |    55 |   357 |  13 |
+| `dfhdl-devices_3`                 | 0.12.0  |     5 |    79 |   0 |
+| **DFHDL total**                   |         | **812** | **6,818** | **98** |
+
+DFHDL is a heavy DSL user (the very pattern SIP-80 was designed for): a
+Scala 3 hardware-description language whose intermediate representation
+is a large algebraic data type with deeply nested case classes. The
+`dfhdl-compiler-ir` module alone has 90 top-level `case T.X` arms and
+81 nested patterns that SIP-80 would shorten.
+
 (Stage A's chars-saved are slightly inflated by an off-by-one in its
 formula — `len(prefix) + 1` instead of `len(prefix)`; Stage B uses
 `text.length - (memberName.length + 1)` directly, which is the actual
@@ -132,9 +151,13 @@ The 4.4× incident multiplier on os-lib is dominated by:
 
 ## Caveats
 
-- TASTy compatibility: the inspector launches under
-  `scala3-compiler:3.7.4`. Reading TASTy from a much-newer compiler
-  may emit version warnings; reading from much-older may fail.
+- TASTy compatibility: `build.sh` auto-detects the target jar's TASTy
+  major.minor (`detect-tasty-version.py` reads the first `.tasty`
+  entry's header) and picks the latest published
+  `scala3-tasty-inspector_3:3.<minor>.x` to run with. The inspector is
+  recompiled and cached per minor under `build/<version>/`. Set
+  `SCALA_VERSION=...` to override the default used by the fixtures
+  self-test.
 - Some libraries' transitive deps are not on Maven Central in a form
   the TASTy reader can chase (e.g. `cats-core_3` references
   `org.typelevel.scalaccompat.annotation.uncheckedVariance2` which
