@@ -1,0 +1,27 @@
+{
+  "total_incidents": 219,
+  "import_based": 97,
+  "total_chars_saved": 1387,
+  "by_category": {
+    "ascription": 3,
+    "call_arg": 69,
+    "if_branch": 6,
+    "match_case": 14,
+    "nested_pattern": 7,
+    "typed_decl": 120
+  },
+  "by_file": {
+    "core/src/main/scala/libretto/puro/Puro.scala": 3,
+    "core/src/main/scala/libretto/puro/PuroLib.scala": 124,
+    "core/src/main/scala/libretto/scaletto/ScalettoLib.scala": 2,
+    "core/src/main/scala/libretto/scaletto/StarterApp.scala": 1,
+    "core/src/main/scala/libretto/scaletto/StarterAppScala.scala": 1,
+    "core/src/main/scala/libretto/scaletto/StarterKit.scala": 1,
+    "core/src/main/scala/libretto/scaletto/impl/-⚬.scala": 14,
+    "core/src/main/scala/libretto/scaletto/impl/Blueprint.scala": 4,
+    "core/src/main/scala/libretto/scaletto/impl/FreeScaletto.scala": 13,
+    "core/src/main/scala/libretto/scaletto/impl/futurebased/ExecutionImpl.scala": 52,
+    "core/src/main/scala/libretto/scaletto/impl/futurebased/ResourceRegistry.scala": 2,
+    "core/src/main/scala/libretto/util/Async.scala": 2
+  }
+}

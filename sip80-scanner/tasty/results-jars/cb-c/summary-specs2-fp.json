@@ -1,0 +1,18 @@
+{
+  "total_incidents": 61,
+  "import_based": 30,
+  "total_chars_saved": 227,
+  "by_category": {
+    "call_arg": 34,
+    "typed_decl": 27
+  },
+  "by_file": {
+    "fp/src/main/scala/org/specs2/fp/Foldable.scala": 2,
+    "fp/src/main/scala/org/specs2/fp/Memo.scala": 8,
+    "fp/src/main/scala/org/specs2/fp/Monad.scala": 1,
+    "fp/src/main/scala/org/specs2/fp/Monoid.scala": 13,
+    "fp/src/main/scala/org/specs2/fp/Show.scala": 2,
+    "fp/src/main/scala/org/specs2/fp/Tree.scala": 12,
+    "fp/src/main/scala/org/specs2/fp/TreeLoc.scala": 23
+  }
+}

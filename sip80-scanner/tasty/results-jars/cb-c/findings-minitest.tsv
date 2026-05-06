@@ -1,0 +1,11 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+minitest	shared/src/main/scala/minitest/TestSuite.scala	33	9	call_arg	minitest.api.TestSpec	sync	8	false	TestSpec.sync
+minitest	shared/src/main/scala/minitest/TestSuite.scala	40	9	call_arg	minitest.api.TestSpec	async	8	false	TestSpec.async
+minitest	shared/src/main/scala/minitest/SimpleTestSuite.scala	27	40	call_arg	minitest.api.TestSpec	sync	8	false	TestSpec.sync
+minitest	shared/src/main/scala/minitest/SimpleTestSuite.scala	33	40	call_arg	minitest.api.TestSpec	async	8	false	TestSpec.async
+minitest	shared/src/main/scala/minitest/runner/Task.scala	40	31	typed_decl	scala.Array	empty	5	false	Array.empty
+minitest	shared/src/main/scala/minitest/runner/Task.scala	91	28	call_arg	scala.concurrent.duration.Duration	Inf	8	false	Duration.Inf
+minitest	shared/src/main/scala/minitest/runner/Task.scala	92	5	typed_decl	scala.Array	empty	5	false	Array.empty
+minitest	shared/src/main/scala-3/minitest/macros/CompileMacros.scala	27	40	call_arg	scala.Option	empty	6	false	Option.empty
+minitest	shared/src/main/scala-3/minitest/macros/CompileMacros.scala	27	40	call_arg	scala.Option	empty	6	false	Option.empty
+minitest	shared/src/main/scala/minitest/api/Void.scala	36	20	typed_decl	minitest.api.Void	UnitRef	0	true	UnitRef

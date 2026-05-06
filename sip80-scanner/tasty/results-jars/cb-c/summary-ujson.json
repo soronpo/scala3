@@ -1,0 +1,17 @@
+{
+  "total_incidents": 15,
+  "import_based": 1,
+  "total_chars_saved": 72,
+  "by_category": {
+    "call_arg": 4,
+    "match_case": 8,
+    "typed_decl": 3
+  },
+  "by_file": {
+    "/home/runner/work/upickle/upickle/out/ujson/jvm/3.3.7/generatedSources.dest/BaseByteRenderer.scala": 4,
+    "/home/runner/work/upickle/upickle/out/ujson/jvm/3.3.7/generatedSources.dest/BaseCharRenderer.scala": 4,
+    "/home/runner/work/upickle/upickle/ujson/src/ujson/JsVisitor.scala": 4,
+    "/home/runner/work/upickle/upickle/ujson/src/ujson/Readable.scala": 1,
+    "/home/runner/work/upickle/upickle/ujson/src/ujson/Value.scala": 2
+  }
+}

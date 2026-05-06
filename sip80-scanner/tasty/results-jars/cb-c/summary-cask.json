@@ -1,0 +1,16 @@
+{
+  "total_incidents": 55,
+  "import_based": 46,
+  "total_chars_saved": 94,
+  "by_category": {
+    "call_arg": 54,
+    "if_branch": 1
+  },
+  "by_file": {
+    "/home/runner/work/cask/cask/cask/src/cask/endpoints/WebSocketEndpoint.scala": 3,
+    "/home/runner/work/cask/cask/cask/src/cask/internal/DispatchTrie.scala": 1,
+    "/home/runner/work/cask/cask/cask/src/cask/internal/Util.scala": 5,
+    "/home/runner/work/cask/cask/cask/src/cask/model/Params.scala": 1,
+    "/home/runner/work/cask/cask/cask/src/cask/model/Status.scala": 45
+  }
+}

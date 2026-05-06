@@ -1,0 +1,25 @@
+{
+  "total_incidents": 33,
+  "import_based": 6,
+  "total_chars_saved": 221,
+  "by_category": {
+    "call_arg": 21,
+    "default_arg": 1,
+    "if_branch": 9,
+    "typed_decl": 2
+  },
+  "by_file": {
+    "matcher/shared/src/main/scala/org/specs2/matcher/AnyMatchers.scala": 1,
+    "matcher/shared/src/main/scala/org/specs2/matcher/CheckedResults.scala": 4,
+    "matcher/shared/src/main/scala/org/specs2/matcher/DataTable.scala": 1,
+    "matcher/shared/src/main/scala/org/specs2/matcher/EqualityMatcher.scala": 1,
+    "matcher/shared/src/main/scala/org/specs2/matcher/Expectable.scala": 1,
+    "matcher/shared/src/main/scala/org/specs2/matcher/Expectations.scala": 1,
+    "matcher/shared/src/main/scala/org/specs2/matcher/ExpectationsDescription.scala": 1,
+    "matcher/shared/src/main/scala/org/specs2/matcher/IterableMatchers.scala": 9,
+    "matcher/shared/src/main/scala/org/specs2/matcher/NumericMatchers.scala": 2,
+    "matcher/shared/src/main/scala/org/specs2/matcher/ResultMatchers.scala": 8,
+    "matcher/shared/src/main/scala/org/specs2/matcher/StringMatchers.scala": 2,
+    "matcher/shared/src/main/scala/org/specs2/matcher/TryMatchers.scala": 2
+  }
+}

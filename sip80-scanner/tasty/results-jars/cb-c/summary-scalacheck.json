@@ -1,0 +1,33 @@
+{
+  "total_incidents": 353,
+  "import_based": 163,
+  "total_chars_saved": 1102,
+  "by_category": {
+    "call_arg": 163,
+    "default_arg": 7,
+    "if_branch": 28,
+    "match_case": 4,
+    "typed_decl": 151
+  },
+  "by_file": {
+    "core/jvm/src/main/scala/org/scalacheck/Platform.scala": 4,
+    "core/jvm/target/scala-3.3.6/src_managed/main/org/scalacheck/GenArities.scala": 22,
+    "core/shared/src/main/scala-2.13+/org/scalacheck/ScalaVersionSpecific.scala": 2,
+    "core/shared/src/main/scala-2.13+/org/scalacheck/util/BuildableVersionSpecific.scala": 1,
+    "core/shared/src/main/scala/org/scalacheck/Arbitrary.scala": 58,
+    "core/shared/src/main/scala/org/scalacheck/Cogen.scala": 11,
+    "core/shared/src/main/scala/org/scalacheck/Gen.scala": 104,
+    "core/shared/src/main/scala/org/scalacheck/Prop.scala": 59,
+    "core/shared/src/main/scala/org/scalacheck/Properties.scala": 2,
+    "core/shared/src/main/scala/org/scalacheck/ScalaCheckFramework.scala": 7,
+    "core/shared/src/main/scala/org/scalacheck/Shrink.scala": 13,
+    "core/shared/src/main/scala/org/scalacheck/Test.scala": 3,
+    "core/shared/src/main/scala/org/scalacheck/commands/Commands.scala": 7,
+    "core/shared/src/main/scala/org/scalacheck/rng/Seed.scala": 2,
+    "core/shared/src/main/scala/org/scalacheck/time/JavaTimeArbitrary.scala": 49,
+    "core/shared/src/main/scala/org/scalacheck/time/JavaTimeChoose.scala": 4,
+    "core/shared/src/main/scala/org/scalacheck/time/JavaTimeShrink.scala": 1,
+    "core/shared/src/main/scala/org/scalacheck/util/Buildable.scala": 2,
+    "core/shared/src/main/scala/org/scalacheck/util/CmdLineParser.scala": 2
+  }
+}

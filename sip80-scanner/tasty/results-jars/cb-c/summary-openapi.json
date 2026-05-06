@@ -1,0 +1,21 @@
+{
+  "total_incidents": 40,
+  "import_based": 1,
+  "total_chars_saved": 220,
+  "by_category": {
+    "call_arg": 24,
+    "match_case": 4,
+    "typed_decl": 12
+  },
+  "by_file": {
+    "openapi/openapi/src/main/scala/endpoints4s/openapi/Assets.scala": 4,
+    "openapi/openapi/src/main/scala/endpoints4s/openapi/BasicAuthentication.scala": 1,
+    "openapi/openapi/src/main/scala/endpoints4s/openapi/ChunkedEntities.scala": 1,
+    "openapi/openapi/src/main/scala/endpoints4s/openapi/JsonSchemas.scala": 3,
+    "openapi/openapi/src/main/scala/endpoints4s/openapi/Requests.scala": 3,
+    "openapi/openapi/src/main/scala/endpoints4s/openapi/Responses.scala": 5,
+    "openapi/openapi/src/main/scala/endpoints4s/openapi/Urls.scala": 11,
+    "openapi/openapi/src/main/scala/endpoints4s/openapi/model/OpenApi.scala": 10,
+    "openapi/openapi/src/main/scala/endpoints4s/ujson/codecs.scala": 2
+  }
+}

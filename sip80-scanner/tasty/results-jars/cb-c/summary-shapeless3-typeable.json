@@ -1,0 +1,12 @@
+{
+  "total_incidents": 2,
+  "import_based": 0,
+  "total_chars_saved": 12,
+  "by_category": {
+    "ascription": 1,
+    "call_arg": 1
+  },
+  "by_file": {
+    "modules/typeable/src/main/scala/shapeless3/typeable/typeable.scala": 2
+  }
+}

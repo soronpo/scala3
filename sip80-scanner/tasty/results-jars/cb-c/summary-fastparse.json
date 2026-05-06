@@ -1,0 +1,20 @@
+{
+  "total_incidents": 36,
+  "import_based": 0,
+  "total_chars_saved": 158,
+  "by_category": {
+    "ascription": 2,
+    "call_arg": 23,
+    "default_arg": 6,
+    "if_branch": 3,
+    "typed_decl": 2
+  },
+  "by_file": {
+    "fastparse/src-3/fastparse/package.scala": 6,
+    "fastparse/src/fastparse/ParserInput.scala": 1,
+    "fastparse/src/fastparse/ParsingRun.scala": 2,
+    "fastparse/src/fastparse/SharedPackageDefs.scala": 10,
+    "fastparse/src/fastparse/Whitespace.scala": 16,
+    "fastparse/src/fastparse/internal/Util.scala": 1
+  }
+}

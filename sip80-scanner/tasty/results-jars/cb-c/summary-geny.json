@@ -1,0 +1,11 @@
+{
+  "total_incidents": 1,
+  "import_based": 0,
+  "total_chars_saved": 3,
+  "by_category": {
+    "call_arg": 1
+  },
+  "by_file": {
+    "geny/src/geny/Generator.scala": 1
+  }
+}

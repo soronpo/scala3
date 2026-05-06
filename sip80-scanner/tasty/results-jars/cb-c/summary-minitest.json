@@ -1,0 +1,16 @@
+{
+  "total_incidents": 10,
+  "import_based": 1,
+  "total_chars_saved": 62,
+  "by_category": {
+    "call_arg": 7,
+    "typed_decl": 3
+  },
+  "by_file": {
+    "shared/src/main/scala-3/minitest/macros/CompileMacros.scala": 2,
+    "shared/src/main/scala/minitest/SimpleTestSuite.scala": 2,
+    "shared/src/main/scala/minitest/TestSuite.scala": 2,
+    "shared/src/main/scala/minitest/api/Void.scala": 1,
+    "shared/src/main/scala/minitest/runner/Task.scala": 3
+  }
+}

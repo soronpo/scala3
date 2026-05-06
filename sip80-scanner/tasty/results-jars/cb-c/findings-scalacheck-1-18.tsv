@@ -1,0 +1,8 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+scalacheck-1-18	scalatestPlusScalaCheck/src/main/scala/org/scalatestplus/scalacheck/Checkers.scala	229	85	typed_decl	org.scalatestplus.scalacheck.CheckerAsserting	assertingNatureOfAssertion	16	false	CheckerAsserting.assertingNatureOfAssertion
+scalacheck-1-18	scalatestPlusScalaCheck/src/main/scala/org/scalatestplus/scalacheck/Checkers.scala	246	21	call_arg	org.scalacheck.Prop	forAll	4	false	Prop.forAll
+scalacheck-1-18	scalatestPlusScalaCheck/src/main/scala/org/scalatestplus/scalacheck/Checkers.scala	265	21	call_arg	org.scalacheck.Prop	forAll	4	false	Prop.forAll
+scalacheck-1-18	scalatestPlusScalaCheck/src/main/scala/org/scalatestplus/scalacheck/Checkers.scala	285	21	call_arg	org.scalacheck.Prop	forAll	4	false	Prop.forAll
+scalacheck-1-18	scalatestPlusScalaCheck/src/main/scala/org/scalatestplus/scalacheck/Checkers.scala	306	21	call_arg	org.scalacheck.Prop	forAll	4	false	Prop.forAll
+scalacheck-1-18	scalatestPlusScalaCheck/src/main/scala/org/scalatestplus/scalacheck/Checkers.scala	328	21	call_arg	org.scalacheck.Prop	forAll	4	false	Prop.forAll
+scalacheck-1-18	scalatestPlusScalaCheck/src/main/scala/org/scalatestplus/scalacheck/Checkers.scala	351	21	call_arg	org.scalacheck.Prop	forAll	4	false	Prop.forAll

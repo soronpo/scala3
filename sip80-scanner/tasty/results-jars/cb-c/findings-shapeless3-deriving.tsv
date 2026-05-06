@@ -1,0 +1,9 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+shapeless3-deriving	modules/deriving/src/main/scala/shapeless3/deriving/annotation.scala	62	43	ascription	shapeless3.deriving.Annotation	mkAnnotation	0	true	mkAnnotation
+shapeless3-deriving	modules/deriving/src/main/scala/shapeless3/deriving/annotation.scala	62	43	ascription	shapeless3.deriving.Annotation	mkAnnotation	0	true	mkAnnotation
+shapeless3-deriving	modules/deriving/src/main/scala/shapeless3/deriving/internals/erased.scala	145	22	call_arg	scala.collection.immutable.Vector	empty	6	false	Vector.empty
+shapeless3-deriving	modules/deriving/src/main/scala/shapeless3/deriving/internals/erased.scala	145	22	call_arg	scala.collection.immutable.Vector	empty	6	false	Vector.empty
+shapeless3-deriving	modules/deriving/src/main/scala/shapeless3/deriving/internals/erased.scala	156	24	call_arg	scala.collection.immutable.Vector	empty	6	false	Vector.empty
+shapeless3-deriving	modules/deriving/src/main/scala/shapeless3/deriving/internals/erased.scala	156	24	call_arg	scala.collection.immutable.Vector	empty	6	false	Vector.empty
+shapeless3-deriving	modules/deriving/src/main/scala/shapeless3/deriving/internals/erased.scala	197	19	call_arg	scala.collection.immutable.Vector	empty	6	false	Vector.empty
+shapeless3-deriving	modules/deriving/src/main/scala/shapeless3/deriving/internals/erased.scala	197	19	call_arg	scala.collection.immutable.Vector	empty	6	false	Vector.empty

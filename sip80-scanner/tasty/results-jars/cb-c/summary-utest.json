@@ -1,0 +1,27 @@
+{
+  "total_incidents": 39,
+  "import_based": 3,
+  "total_chars_saved": 315,
+  "by_category": {
+    "call_arg": 25,
+    "default_arg": 3,
+    "if_branch": 4,
+    "typed_decl": 7
+  },
+  "by_file": {
+    "/home/runner/work/utest/utest/out/utest/jvm/3.3.6/generatedSources.dest/TPrintImpl.scala": 8,
+    "/home/runner/work/utest/utest/out/utest/jvm/3.3.6/generatedSources.dest/fansi/Fansi.scala": 7,
+    "/home/runner/work/utest/utest/out/utest/jvm/3.3.6/generatedSources.dest/pprint/PPrinter.scala": 3,
+    "/home/runner/work/utest/utest/out/utest/jvm/3.3.6/generatedSources.dest/pprint/TPrint.scala": 1,
+    "/home/runner/work/utest/utest/utest/src-3/utest/TestBuilder.scala": 4,
+    "/home/runner/work/utest/utest/utest/src-3/utest/asserts/Tracer.scala": 3,
+    "/home/runner/work/utest/utest/utest/src-jvm/utest/asserts/AssertsPlatformSpecific.scala": 4,
+    "/home/runner/work/utest/utest/utest/src-jvm/utest/framework/PlatformShims.scala": 1,
+    "/home/runner/work/utest/utest/utest/src/utest/TestRunner.scala": 2,
+    "/home/runner/work/utest/utest/utest/src/utest/asserts/Util.scala": 1,
+    "/home/runner/work/utest/utest/utest/src/utest/framework/DefaultFormatters.scala": 1,
+    "/home/runner/work/utest/utest/utest/src/utest/framework/Formatter.scala": 2,
+    "/home/runner/work/utest/utest/utest/src/utest/runner/BaseRunner.scala": 1,
+    "/home/runner/work/utest/utest/utest/src/utest/runner/MasterRunner.scala": 1
+  }
+}

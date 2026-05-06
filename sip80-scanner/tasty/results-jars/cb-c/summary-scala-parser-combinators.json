@@ -1,0 +1,15 @@
+{
+  "total_incidents": 11,
+  "import_based": 7,
+  "total_chars_saved": 46,
+  "by_category": {
+    "call_arg": 2,
+    "typed_decl": 9
+  },
+  "by_file": {
+    "shared/src/main/scala/scala/util/parsing/combinator/PackratParsers.scala": 2,
+    "shared/src/main/scala/scala/util/parsing/combinator/RegexParsers.scala": 1,
+    "shared/src/main/scala/scala/util/parsing/input/PagedSeq.scala": 7,
+    "shared/src/main/scala/scala/util/parsing/input/StreamReader.scala": 1
+  }
+}

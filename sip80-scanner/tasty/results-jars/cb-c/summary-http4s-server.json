@@ -1,0 +1,17 @@
+{
+  "total_incidents": 16,
+  "import_based": 0,
+  "total_chars_saved": 187,
+  "by_category": {
+    "call_arg": 1,
+    "typed_decl": 15
+  },
+  "by_file": {
+    "http4s/server/src/main/scala/endpoints4s/http4s/server/Assets.scala": 2,
+    "http4s/server/src/main/scala/endpoints4s/http4s/server/BasicAuthentication.scala": 1,
+    "http4s/server/src/main/scala/endpoints4s/http4s/server/BuiltInErrors.scala": 1,
+    "http4s/server/src/main/scala/endpoints4s/http4s/server/ChunkedEntities.scala": 3,
+    "http4s/server/src/main/scala/endpoints4s/http4s/server/Endpoints.scala": 3,
+    "http4s/server/src/main/scala/endpoints4s/http4s/server/Methods.scala": 6
+  }
+}

@@ -1,0 +1,13 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+pprint	/home/runner/work/PPrint/PPrint/pprint/src-3/TPrintImpl.scala	88	25	call_arg	pprint.TPrintLowPri$.WrapType$.NoWrap$	NoWrap	8	false	WrapType.NoWrap
+pprint	/home/runner/work/PPrint/PPrint/pprint/src-3/TPrintImpl.scala	91	25	call_arg	pprint.TPrintLowPri$.WrapType$.NoWrap$	NoWrap	8	false	WrapType.NoWrap
+pprint	/home/runner/work/PPrint/PPrint/pprint/src-3/TPrintImpl.scala	104	13	call_arg	pprint.TPrintLowPri$.WrapType$.Infix$	Infix	8	false	WrapType.Infix
+pprint	/home/runner/work/PPrint/PPrint/pprint/src-3/TPrintImpl.scala	108	66	call_arg	pprint.TPrintLowPri$.WrapType$.Tuple$	Tuple	8	false	WrapType.Tuple
+pprint	/home/runner/work/PPrint/PPrint/pprint/src-3/TPrintImpl.scala	109	65	call_arg	pprint.TPrintLowPri$.WrapType$.NoWrap$	NoWrap	8	false	WrapType.NoWrap
+pprint	/home/runner/work/PPrint/PPrint/pprint/src-3/TPrintImpl.scala	121	93	call_arg	pprint.TPrintLowPri$.WrapType$.NoWrap$	NoWrap	8	false	WrapType.NoWrap
+pprint	/home/runner/work/PPrint/PPrint/pprint/src-3/TPrintImpl.scala	123	28	call_arg	pprint.TPrintLowPri$.WrapType$.NoWrap$	NoWrap	8	false	WrapType.NoWrap
+pprint	/home/runner/work/PPrint/PPrint/pprint/src-3/TPrintImpl.scala	125	35	call_arg	pprint.TPrintLowPri$.WrapType$.NoWrap$	NoWrap	8	false	WrapType.NoWrap
+pprint	/home/runner/work/PPrint/PPrint/pprint/src/pprint/TPrint.scala	31	5	typed_decl	pprint.TPrint	recolor	0	true	recolor
+pprint	/home/runner/work/PPrint/PPrint/pprint/src/pprint/PPrinter.scala	115	5	typed_decl	fansi.Str	join	9	false	fansi.Str.join
+pprint	/home/runner/work/PPrint/PPrint/pprint/src/pprint/PPrinter.scala	24	70	default_arg	scala.PartialFunction	empty	15	false	PartialFunction.empty
+pprint	/home/runner/work/PPrint/PPrint/pprint/src/pprint/PPrinter.scala	24	70	default_arg	scala.PartialFunction	empty	15	false	PartialFunction.empty

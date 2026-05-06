@@ -1,0 +1,29 @@
+{
+  "total_incidents": 70,
+  "import_based": 10,
+  "total_chars_saved": 403,
+  "by_category": {
+    "call_arg": 10,
+    "if_branch": 2,
+    "match_case": 7,
+    "typed_decl": 51
+  },
+  "by_file": {
+    "shared/src/main/scala-2.13+/scala/xml/ScalaVersionSpecific.scala": 1,
+    "shared/src/main/scala/scala/xml/Elem.scala": 1,
+    "shared/src/main/scala/scala/xml/MetaData.scala": 4,
+    "shared/src/main/scala/scala/xml/NodeSeq.scala": 3,
+    "shared/src/main/scala/scala/xml/Null.scala": 2,
+    "shared/src/main/scala/scala/xml/dtd/DocType.scala": 1,
+    "shared/src/main/scala/scala/xml/dtd/impl/NondetWordAutom.scala": 1,
+    "shared/src/main/scala/scala/xml/dtd/impl/SubsetConstruction.scala": 3,
+    "shared/src/main/scala/scala/xml/factory/XMLLoader.scala": 1,
+    "shared/src/main/scala/scala/xml/parsing/DefaultMarkupHandler.scala": 5,
+    "shared/src/main/scala/scala/xml/parsing/DtdBuilder.scala": 14,
+    "shared/src/main/scala/scala/xml/parsing/ElementContentModel.scala": 15,
+    "shared/src/main/scala/scala/xml/parsing/ExternalSources.scala": 1,
+    "shared/src/main/scala/scala/xml/parsing/FactoryAdapter.scala": 15,
+    "shared/src/main/scala/scala/xml/parsing/MarkupHandler.scala": 1,
+    "shared/src/main/scala/scala/xml/parsing/MarkupParser.scala": 2
+  }
+}

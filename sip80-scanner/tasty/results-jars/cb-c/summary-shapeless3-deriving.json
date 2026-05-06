@@ -1,0 +1,13 @@
+{
+  "total_incidents": 8,
+  "import_based": 2,
+  "total_chars_saved": 36,
+  "by_category": {
+    "ascription": 2,
+    "call_arg": 6
+  },
+  "by_file": {
+    "modules/deriving/src/main/scala/shapeless3/deriving/annotation.scala": 2,
+    "modules/deriving/src/main/scala/shapeless3/deriving/internals/erased.scala": 6
+  }
+}

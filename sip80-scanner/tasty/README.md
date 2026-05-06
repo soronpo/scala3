@@ -214,6 +214,76 @@ typeclass instance vals, which is exactly the P1 pattern.
 
 Saved per-module under `results-jars/cb-b/`.
 
+### Scala 3 community build, category C
+
+The largest community-build slice: 30 active named projects in
+`CommunityBuildTestC`. We scanned 33 published Maven modules
+(some projects, like `endpoints4s`, `specs2`, ship as several
+artifacts; we picked the main ones). Five projects have no Maven
+Central release (`effpi`, `intent`, `scalap`, `scas`,
+`xml-interpolator`) — they're built only locally during the
+community-build run — and are listed below as "skipped".
+
+| Module                                              | Version           | Incidents | Chars saved | Import-based |
+|---|---|---:|---:|---:|
+| `com.lihaoyi:cask_3`                                | 0.11.3            |    55 |    94 |  46 |
+| `org.endpoints4s:algebra_3`                         | 1.12.1            |    13 |    57 |   0 |
+| `org.endpoints4s:openapi_3`                         | 5.0.1             |    40 |   220 |   1 |
+| `org.endpoints4s:http4s-server_3`                   | 11.0.1            |    16 |   187 |   0 |
+| `org.endpoints4s:json-schema-generic_3`             | 1.12.1            |     0 |     0 |   0 |
+| `com.lihaoyi:fansi_3`                               | 0.5.1             |     7 |    40 |   2 |
+| `com.lihaoyi:fastparse_3`                           | 3.1.1             |    36 |   158 |   0 |
+| `com.lihaoyi:geny_3`                                | 1.1.1             |     1 |     3 |   0 |
+| `dev.continuously.libretto:libretto-core_3`         | 0.3.10            |   219 | 1,387 |  97 |
+| `io.monix:minitest_3`                               | 2.9.6             |    10 |    62 |   1 |
+| `com.lihaoyi:os-lib_3`                              | 0.11.3            |   129 | 1,102 |  40 |
+| `org.parboiled:parboiled_3`                         | 2.5.1             |    47 |    57 |  34 |
+| `com.lihaoyi:pprint_3`                              | 0.9.6             |    12 |   103 |   1 |
+| `com.lihaoyi:requests_3`                            | 0.9.3             |    11 |    95 |   0 |
+| `org.scalacheck:scalacheck_3`                       | 1.19.0            |   353 | 1,102 | 163 |
+| `org.scala-lang.modules:scala-java8-compat_3`       | 1.0.2             |    31 |   321 |   0 |
+| `org.scala-lang.modules:scala-parallel-collections_3` | 1.2.0           |    46 |   219 |  20 |
+| `org.scala-lang.modules:scala-parser-combinators_3` | 2.4.0             |    11 |    46 |   7 |
+| `com.thesamet.scalapb:scalapb-runtime_3`            | 1.0.0-alpha.3     |   571 | 16,295 | 139 |
+| `com.thesamet.scalapb:lenses_3`                     | 1.0.0-alpha.3     |     0 |     0 |   0 |
+| `org.scalatestplus:scalacheck-1-18_3`               | 3.3.0.0-alpha.2   |     7 |    40 |   0 |
+| `org.scala-lang.modules:scala-xml_3`                | 2.4.0             |    70 |   403 |  10 |
+| `org.scalaz:scalaz-core_3`                          | 7.4.0-M15         | 1,483 | 4,047 | 904 |
+| `org.ekrich:sconfig_3`                              | 1.12.4            |   232 | 2,246 |  67 |
+| `org.typelevel:shapeless3-deriving_3`               | 3.5.0             |     8 |    36 |   2 |
+| `org.typelevel:shapeless3-typeable_3`               | 3.5.0             |     2 |    12 |   0 |
+| `com.lihaoyi:sourcecode_3`                          | 0.4.4             |     0 |     0 |   0 |
+| `org.specs2:specs2-core_3`                          | 5.9.0             |   136 | 1,021 |  20 |
+| `org.specs2:specs2-matcher_3`                       | 5.9.0             |    33 |   221 |   6 |
+| `org.specs2:specs2-common_3`                        | 5.9.0             |   117 |   845 |  18 |
+| `org.specs2:specs2-fp_3`                            | 5.9.0             |    61 |   227 |  30 |
+| `com.lihaoyi:ujson_3`                               | 4.4.3             |    15 |    72 |   1 |
+| `com.lihaoyi:utest_3`                               | 0.10.0-RC1        |    39 |   315 |   3 |
+| `com.eed3si9n.verify:verify_3`                      | 1.0.0             |    15 |    95 |   1 |
+| **Category C total**                                |                   | **3,826** | **31,128** | **1,613** |
+
+Skipped (no published Maven artifact at scan time): `effpi`,
+`intent`, `scalap`, `scas`, `xml-interpolator`.
+
+Top contributors are `scalaz-core` (1,483 incidents, 904 of them
+import-based — pervasive use of `import Foo._` to bring typeclass
+syntax into scope), `scalapb-runtime` (571 incidents, 16,295 chars
+saved — generated protobuf code with explicit types everywhere),
+`scalacheck` (353), `sconfig` (232), and `libretto-core` (219).
+
+### Community-build grand totals (A + B + C)
+
+| Category | Incidents | Chars saved | Import-based |
+|---|---:|---:|---:|
+| A | 335 | 2,111 | 54 |
+| B | 1,798 | 9,836 | 499 |
+| C | 3,826 | 31,128 | 1,613 |
+| **Total** | **5,959** | **43,075** | **2,166** |
+
+That's roughly 6,000 places across the curated Scala 3 community
+build where SIP-80's `.X` shorthand would resolve, ~36 % via bare
+identifiers visible only because the user opened a wildcard import.
+
 ### Scala 3 itself (compiler + library + tooling, version 3.8.3)
 
 | Module                                | Incidents | Chars saved | Import-based |

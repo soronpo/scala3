@@ -1,0 +1,16 @@
+{
+  "total_incidents": 31,
+  "import_based": 0,
+  "total_chars_saved": 321,
+  "by_category": {
+    "call_arg": 3,
+    "if_branch": 14,
+    "match_case": 7,
+    "typed_decl": 7
+  },
+  "by_file": {
+    "src/main/scala/scala/compat/java8/DurationConverters.scala": 12,
+    "src/main/scala/scala/compat/java8/FutureConverters.scala": 7,
+    "src/main/scala/scala/compat/java8/OptionConverters.scala": 12
+  }
+}

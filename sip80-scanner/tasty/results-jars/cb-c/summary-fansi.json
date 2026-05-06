@@ -1,0 +1,13 @@
+{
+  "total_incidents": 7,
+  "import_based": 2,
+  "total_chars_saved": 40,
+  "by_category": {
+    "call_arg": 4,
+    "default_arg": 1,
+    "typed_decl": 2
+  },
+  "by_file": {
+    "/home/runner/work/fansi/fansi/fansi/src/fansi/Fansi.scala": 7
+  }
+}

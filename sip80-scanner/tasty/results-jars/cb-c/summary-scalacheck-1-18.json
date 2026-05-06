@@ -1,0 +1,12 @@
+{
+  "total_incidents": 7,
+  "import_based": 0,
+  "total_chars_saved": 40,
+  "by_category": {
+    "call_arg": 6,
+    "typed_decl": 1
+  },
+  "by_file": {
+    "scalatestPlusScalaCheck/src/main/scala/org/scalatestplus/scalacheck/Checkers.scala": 7
+  }
+}

@@ -1,0 +1,12 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+requests	/home/runner/work/requests-scala/requests-scala/requests/src/requests/package.scala	32	28	typed_decl	requests.Compress	None	8	false	Compress.None
+requests	/home/runner/work/requests-scala/requests-scala/requests/src/requests/Util.scala	50	56	call_arg	scala.Array	emptyCharArray	5	false	Array.emptyCharArray
+requests	/home/runner/work/requests-scala/requests-scala/requests/src/requests/Session.scala	35	25	default_arg	requests.RequestAuth	Empty	11	false	RequestAuth.Empty
+requests	/home/runner/work/requests-scala/requests-scala/requests/src/requests/Session.scala	45	26	default_arg	requests.Compress	None	8	false	Compress.None
+requests	/home/runner/work/requests-scala/requests-scala/requests/src/requests/Requester.scala	198	27	default_arg	requests.RequestBlob	EmptyRequestBlob	11	false	RequestBlob.EmptyRequestBlob
+requests	/home/runner/work/requests-scala/requests-scala/requests/src/requests/Requester.scala	342	31	call_arg	scala.collection.immutable.ListMap	empty	7	false	ListMap.empty
+requests	/home/runner/work/requests-scala/requests-scala/requests/src/requests/Requester.scala	342	31	call_arg	scala.collection.immutable.ListMap	empty	7	false	ListMap.empty
+requests	/home/runner/work/requests-scala/requests-scala/requests/src/requests/Requester.scala	274	27	default_arg	requests.RequestBlob	EmptyRequestBlob	11	false	RequestBlob.EmptyRequestBlob
+requests	/home/runner/work/requests-scala/requests-scala/requests/src/requests/Model.scala	43	25	default_arg	requests.RequestAuth	Empty	11	false	RequestAuth.Empty
+requests	/home/runner/work/requests-scala/requests-scala/requests/src/requests/Model.scala	56	26	default_arg	requests.Compress	None	8	false	Compress.None
+requests	/home/runner/work/requests-scala/requests-scala/requests/src/requests/Requester.scala	101	23	call_arg	java.time.Duration	ofMillis	8	false	Duration.ofMillis

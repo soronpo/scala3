@@ -1,0 +1,2 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+geny	geny/src/geny/Generator.scala	120	31	call_arg	scala.Int	MaxValue	3	false	Int.MaxValue

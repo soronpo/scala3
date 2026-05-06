@@ -1,0 +1,8 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+fansi	/home/runner/work/fansi/fansi/fansi/src/fansi/Fansi.scala	227	62	typed_decl	fansi.Str	apply	0	true	apply
+fansi	/home/runner/work/fansi/fansi/fansi/src/fansi/Fansi.scala	245	48	call_arg	fansi.ErrorMode	Sanitize	9	false	ErrorMode.Sanitize
+fansi	/home/runner/work/fansi/fansi/fansi/src/fansi/Fansi.scala	248	45	call_arg	fansi.ErrorMode	Strip	9	false	ErrorMode.Strip
+fansi	/home/runner/work/fansi/fansi/fansi/src/fansi/Fansi.scala	251	45	call_arg	fansi.ErrorMode	Throw	9	false	ErrorMode.Throw
+fansi	/home/runner/work/fansi/fansi/fansi/src/fansi/Fansi.scala	264	55	default_arg	fansi.ErrorMode	Sanitize	9	false	ErrorMode.Sanitize
+fansi	/home/runner/work/fansi/fansi/fansi/src/fansi/Fansi.scala	366	5	typed_decl	fansi.Str	join	0	true	join
+fansi	/home/runner/work/fansi/fansi/fansi/src/fansi/Fansi.scala	401	29	call_arg	fansi.EscapeAttr	Reset	4	false	Attr.Reset

@@ -1,0 +1,13 @@
+{
+  "total_incidents": 13,
+  "import_based": 0,
+  "total_chars_saved": 57,
+  "by_category": {
+    "call_arg": 11,
+    "default_arg": 2
+  },
+  "by_file": {
+    "algebras/algebra/src/main/scala/endpoints4s/algebra/Endpoints.scala": 4,
+    "algebras/algebra/src/main/scala/endpoints4s/algebra/Urls.scala": 9
+  }
+}

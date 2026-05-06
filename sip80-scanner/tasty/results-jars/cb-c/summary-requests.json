@@ -1,0 +1,17 @@
+{
+  "total_incidents": 11,
+  "import_based": 0,
+  "total_chars_saved": 95,
+  "by_category": {
+    "call_arg": 4,
+    "default_arg": 6,
+    "typed_decl": 1
+  },
+  "by_file": {
+    "/home/runner/work/requests-scala/requests-scala/requests/src/requests/Model.scala": 2,
+    "/home/runner/work/requests-scala/requests-scala/requests/src/requests/Requester.scala": 5,
+    "/home/runner/work/requests-scala/requests-scala/requests/src/requests/Session.scala": 2,
+    "/home/runner/work/requests-scala/requests-scala/requests/src/requests/Util.scala": 1,
+    "/home/runner/work/requests-scala/requests-scala/requests/src/requests/package.scala": 1
+  }
+}

@@ -1,0 +1,16 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+ujson	/home/runner/work/upickle/upickle/ujson/src/ujson/Value.scala	144	62	typed_decl	ujson.Arr	from	3	false	Arr.from
+ujson	/home/runner/work/upickle/upickle/ujson/src/ujson/Value.scala	146	63	typed_decl	ujson.Obj	from	3	false	Obj.from
+ujson	/home/runner/work/upickle/upickle/ujson/src/ujson/Readable.scala	31	54	typed_decl	ujson.Readable	fromPath	0	true	fromPath
+ujson	/home/runner/work/upickle/upickle/ujson/src/ujson/JsVisitor.scala	11	14	call_arg	scala.Double	PositiveInfinity	6	false	Double.PositiveInfinity
+ujson	/home/runner/work/upickle/upickle/ujson/src/ujson/JsVisitor.scala	12	19	call_arg	scala.Double	NegativeInfinity	6	false	Double.NegativeInfinity
+ujson	/home/runner/work/upickle/upickle/ujson/src/ujson/JsVisitor.scala	21	14	call_arg	scala.Float	PositiveInfinity	5	false	Float.PositiveInfinity
+ujson	/home/runner/work/upickle/upickle/ujson/src/ujson/JsVisitor.scala	22	19	call_arg	scala.Float	NegativeInfinity	5	false	Float.NegativeInfinity
+ujson	/home/runner/work/upickle/upickle/out/ujson/jvm/3.3.7/generatedSources.dest/BaseCharRenderer.scala	141	12	match_case	scala.Float	PositiveInfinity	5	false	Float.PositiveInfinity
+ujson	/home/runner/work/upickle/upickle/out/ujson/jvm/3.3.7/generatedSources.dest/BaseCharRenderer.scala	142	12	match_case	scala.Float	NegativeInfinity	5	false	Float.NegativeInfinity
+ujson	/home/runner/work/upickle/upickle/out/ujson/jvm/3.3.7/generatedSources.dest/BaseCharRenderer.scala	165	12	match_case	scala.Double	PositiveInfinity	6	false	Double.PositiveInfinity
+ujson	/home/runner/work/upickle/upickle/out/ujson/jvm/3.3.7/generatedSources.dest/BaseCharRenderer.scala	166	12	match_case	scala.Double	NegativeInfinity	6	false	Double.NegativeInfinity
+ujson	/home/runner/work/upickle/upickle/out/ujson/jvm/3.3.7/generatedSources.dest/BaseByteRenderer.scala	141	12	match_case	scala.Float	PositiveInfinity	5	false	Float.PositiveInfinity
+ujson	/home/runner/work/upickle/upickle/out/ujson/jvm/3.3.7/generatedSources.dest/BaseByteRenderer.scala	142	12	match_case	scala.Float	NegativeInfinity	5	false	Float.NegativeInfinity
+ujson	/home/runner/work/upickle/upickle/out/ujson/jvm/3.3.7/generatedSources.dest/BaseByteRenderer.scala	165	12	match_case	scala.Double	PositiveInfinity	6	false	Double.PositiveInfinity
+ujson	/home/runner/work/upickle/upickle/out/ujson/jvm/3.3.7/generatedSources.dest/BaseByteRenderer.scala	166	12	match_case	scala.Double	NegativeInfinity	6	false	Double.NegativeInfinity

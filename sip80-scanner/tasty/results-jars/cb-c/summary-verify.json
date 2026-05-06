@@ -1,0 +1,19 @@
+{
+  "total_incidents": 15,
+  "import_based": 1,
+  "total_chars_saved": 95,
+  "by_category": {
+    "call_arg": 6,
+    "typed_decl": 9
+  },
+  "by_file": {
+    "jvm/src/main/scala/verify/platform/package.scala": 1,
+    "shared/src/main/scala/verify/BasicTestSuite.scala": 2,
+    "shared/src/main/scala/verify/DiffUtil.scala": 1,
+    "shared/src/main/scala/verify/TestSuite.scala": 2,
+    "shared/src/main/scala/verify/Void.scala": 1,
+    "shared/src/main/scala/verify/asserts/ExpressionRenderer.scala": 1,
+    "shared/src/main/scala/verify/asserts/RecorderRuntime.scala": 4,
+    "shared/src/main/scala/verify/runner/Task.scala": 3
+  }
+}

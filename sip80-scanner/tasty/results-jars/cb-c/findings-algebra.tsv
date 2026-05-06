@@ -1,0 +1,14 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+algebra	algebras/algebra/src/main/scala/endpoints4s/algebra/Urls.scala	198	37	call_arg	endpoints4s.Codec	uuidCodec	5	false	Codec.uuidCodec
+algebra	algebras/algebra/src/main/scala/endpoints4s/algebra/Urls.scala	204	37	call_arg	endpoints4s.Codec	intCodec	5	false	Codec.intCodec
+algebra	algebras/algebra/src/main/scala/endpoints4s/algebra/Urls.scala	210	37	call_arg	endpoints4s.Codec	longCodec	5	false	Codec.longCodec
+algebra	algebras/algebra/src/main/scala/endpoints4s/algebra/Urls.scala	216	37	call_arg	endpoints4s.Codec	booleanCodec	5	false	Codec.booleanCodec
+algebra	algebras/algebra/src/main/scala/endpoints4s/algebra/Urls.scala	222	37	call_arg	endpoints4s.Codec	doubleCodec	5	false	Codec.doubleCodec
+algebra	algebras/algebra/src/main/scala/endpoints4s/algebra/Urls.scala	253	33	call_arg	endpoints4s.Codec	uuidCodec	5	false	Codec.uuidCodec
+algebra	algebras/algebra/src/main/scala/endpoints4s/algebra/Urls.scala	259	33	call_arg	endpoints4s.Codec	intCodec	5	false	Codec.intCodec
+algebra	algebras/algebra/src/main/scala/endpoints4s/algebra/Urls.scala	265	33	call_arg	endpoints4s.Codec	longCodec	5	false	Codec.longCodec
+algebra	algebras/algebra/src/main/scala/endpoints4s/algebra/Urls.scala	271	33	call_arg	endpoints4s.Codec	doubleCodec	5	false	Codec.doubleCodec
+algebra	algebras/algebra/src/main/scala/endpoints4s/algebra/Endpoints.scala	230	47	call_arg	scala.collection.immutable.Map	empty	3	false	Map.empty
+algebra	algebras/algebra/src/main/scala/endpoints4s/algebra/Endpoints.scala	230	47	call_arg	scala.collection.immutable.Map	empty	3	false	Map.empty
+algebra	algebras/algebra/src/main/scala/endpoints4s/algebra/Endpoints.scala	240	49	default_arg	scala.collection.immutable.Map	empty	3	false	Map.empty
+algebra	algebras/algebra/src/main/scala/endpoints4s/algebra/Endpoints.scala	240	49	default_arg	scala.collection.immutable.Map	empty	3	false	Map.empty

@@ -1,0 +1,12 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+scala-parser-combinators	shared/src/main/scala/scala/util/parsing/input/StreamReader.scala	27	22	call_arg	scala.util.parsing.input.PagedSeq	fromReader	8	false	PagedSeq.fromReader
+scala-parser-combinators	shared/src/main/scala/scala/util/parsing/input/PagedSeq.scala	41	5	typed_decl	scala.util.parsing.input.PagedSeq	fromIterator	0	true	fromIterator
+scala-parser-combinators	shared/src/main/scala/scala/util/parsing/input/PagedSeq.scala	45	5	typed_decl	scala.util.parsing.input.PagedSeq	fromIterator	0	true	fromIterator
+scala-parser-combinators	shared/src/main/scala/scala/util/parsing/input/PagedSeq.scala	49	5	typed_decl	scala.util.parsing.input.PagedSeq	fromStrings	0	true	fromStrings
+scala-parser-combinators	shared/src/main/scala/scala/util/parsing/input/PagedSeq.scala	57	5	typed_decl	scala.util.parsing.input.PagedSeq	fromStrings	0	true	fromStrings
+scala-parser-combinators	shared/src/main/scala/scala/util/parsing/input/PagedSeq.scala	70	5	typed_decl	scala.util.parsing.input.PagedSeq	fromLines	0	true	fromLines
+scala-parser-combinators	shared/src/main/scala/scala/util/parsing/input/PagedSeq.scala	80	5	typed_decl	scala.util.parsing.input.PagedSeq	fromReader	0	true	fromReader
+scala-parser-combinators	shared/src/main/scala/scala/util/parsing/input/PagedSeq.scala	85	5	typed_decl	scala.util.parsing.input.PagedSeq	fromFile	0	true	fromFile
+scala-parser-combinators	shared/src/main/scala/scala/util/parsing/combinator/RegexParsers.scala	182	26	call_arg	scala.util.parsing.input.PagedSeq	fromReader	8	false	PagedSeq.fromReader
+scala-parser-combinators	shared/src/main/scala/scala/util/parsing/combinator/PackratParsers.scala	79	83	typed_decl	scala.collection.mutable.HashMap	empty	15	false	mutable.HashMap.empty
+scala-parser-combinators	shared/src/main/scala/scala/util/parsing/combinator/PackratParsers.scala	79	83	typed_decl	scala.collection.mutable.HashMap	empty	15	false	mutable.HashMap.empty

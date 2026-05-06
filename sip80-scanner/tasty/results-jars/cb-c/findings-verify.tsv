@@ -1,0 +1,16 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+verify	shared/src/main/scala/verify/Void.scala	33	20	typed_decl	verify.Void	UnitRef	0	true	UnitRef
+verify	shared/src/main/scala/verify/TestSuite.scala	29	9	call_arg	verify.TestSpec	sync	8	false	TestSpec.sync
+verify	shared/src/main/scala/verify/TestSuite.scala	36	9	call_arg	verify.TestSpec	async	8	false	TestSpec.async
+verify	shared/src/main/scala/verify/DiffUtil.scala	217	5	typed_decl	scala.Array	tabulate	5	false	Array.tabulate
+verify	shared/src/main/scala/verify/BasicTestSuite.scala	23	40	call_arg	verify.TestSpec	sync	8	false	TestSpec.sync
+verify	shared/src/main/scala/verify/BasicTestSuite.scala	29	40	call_arg	verify.TestSpec	async	8	false	TestSpec.async
+verify	shared/src/main/scala/verify/runner/Task.scala	26	31	typed_decl	scala.Array	empty	5	false	Array.empty
+verify	shared/src/main/scala/verify/runner/Task.scala	77	28	call_arg	scala.concurrent.duration.Duration	Inf	8	false	Duration.Inf
+verify	shared/src/main/scala/verify/runner/Task.scala	78	5	typed_decl	scala.Array	empty	5	false	Array.empty
+verify	jvm/src/main/scala/verify/platform/package.scala	25	56	typed_decl	scala.concurrent.ExecutionContext	fromExecutor	16	false	ExecutionContext.fromExecutor
+verify	shared/src/main/scala/verify/asserts/RecorderRuntime.scala	18	55	typed_decl	scala.collection.immutable.List	empty	4	false	List.empty
+verify	shared/src/main/scala/verify/asserts/RecorderRuntime.scala	18	55	typed_decl	scala.collection.immutable.List	empty	4	false	List.empty
+verify	shared/src/main/scala/verify/asserts/RecorderRuntime.scala	19	62	typed_decl	scala.collection.immutable.List	empty	4	false	List.empty
+verify	shared/src/main/scala/verify/asserts/RecorderRuntime.scala	19	62	typed_decl	scala.collection.immutable.List	empty	4	false	List.empty
+verify	shared/src/main/scala/verify/asserts/ExpressionRenderer.scala	43	45	call_arg	scala.math.Ordering	by	8	false	Ordering.by

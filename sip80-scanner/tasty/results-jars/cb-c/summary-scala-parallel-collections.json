@@ -1,0 +1,24 @@
+{
+  "total_incidents": 46,
+  "import_based": 20,
+  "total_chars_saved": 219,
+  "by_category": {
+    "call_arg": 12,
+    "default_arg": 1,
+    "if_branch": 12,
+    "typed_decl": 21
+  },
+  "by_file": {
+    "core/src/main/scala/scala/collection/immutable/OldHashMap.scala": 16,
+    "core/src/main/scala/scala/collection/immutable/OldHashSet.scala": 13,
+    "core/src/main/scala/scala/collection/parallel/ParIterableLike.scala": 3,
+    "core/src/main/scala/scala/collection/parallel/ParSeqLike.scala": 3,
+    "core/src/main/scala/scala/collection/parallel/TaskSupport.scala": 1,
+    "core/src/main/scala/scala/collection/parallel/Tasks.scala": 1,
+    "core/src/main/scala/scala/collection/parallel/immutable/ParRange.scala": 1,
+    "core/src/main/scala/scala/collection/parallel/mutable/ParArray.scala": 4,
+    "core/src/main/scala/scala/collection/parallel/mutable/ParHashSet.scala": 1,
+    "core/src/main/scala/scala/collection/parallel/mutable/ParTrieMap.scala": 2,
+    "core/src/main/scala/scala/collection/parallel/mutable/ResizableParArrayCombiner.scala": 1
+  }
+}

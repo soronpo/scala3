@@ -1,0 +1,17 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/Methods.scala	13	21	typed_decl	org.http4s.Method	GET	13	false	http4s.Method.GET
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/Methods.scala	14	22	typed_decl	org.http4s.Method	POST	13	false	http4s.Method.POST
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/Methods.scala	15	21	typed_decl	org.http4s.Method	PUT	13	false	http4s.Method.PUT
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/Methods.scala	16	24	typed_decl	org.http4s.Method	DELETE	13	false	http4s.Method.DELETE
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/Methods.scala	17	23	typed_decl	org.http4s.Method	PATCH	13	false	http4s.Method.PATCH
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/Methods.scala	18	25	typed_decl	org.http4s.Method	OPTIONS	13	false	http4s.Method.OPTIONS
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/Endpoints.scala	244	5	typed_decl	org.http4s.EntityEncoder	emptyEncoder	13	false	EntityEncoder.emptyEncoder
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/Endpoints.scala	244	5	typed_decl	org.http4s.EntityEncoder	emptyEncoder	13	false	EntityEncoder.emptyEncoder
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/Endpoints.scala	247	5	typed_decl	org.http4s.EntityEncoder	stringEncoder	13	false	EntityEncoder.stringEncoder
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/ChunkedEntities.scala	71	5	typed_decl	org.http4s.EntityEncoder	encodeBy	13	false	EntityEncoder.encodeBy
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/ChunkedEntities.scala	21	5	typed_decl	org.http4s.EntityEncoder	encodeBy	13	false	EntityEncoder.encodeBy
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/ChunkedEntities.scala	27	5	typed_decl	org.http4s.EntityEncoder	encodeBy	13	false	EntityEncoder.encodeBy
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/BuiltInErrors.scala	18	5	typed_decl	org.http4s.EntityEncoder	simple	13	false	EntityEncoder.simple
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/BasicAuthentication.scala	22	9	call_arg	cats.data.NonEmptyList	of	12	false	NonEmptyList.of
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/Assets.scala	18	38	typed_decl	scala.collection.immutable.Map	empty	3	false	Map.empty
+http4s-server	http4s/server/src/main/scala/endpoints4s/http4s/server/Assets.scala	18	38	typed_decl	scala.collection.immutable.Map	empty	3	false	Map.empty
