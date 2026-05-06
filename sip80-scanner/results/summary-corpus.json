@@ -1,0 +1,101 @@
+{
+  "label": "corpus",
+  "total_incidents": 7172,
+  "total_chars_saved": 69351,
+  "by_pattern": {
+    "P1": {
+      "incidents": 4512,
+      "chars_saved": 36380
+    },
+    "P4": {
+      "incidents": 242,
+      "chars_saved": 2205
+    },
+    "P2": {
+      "incidents": 835,
+      "chars_saved": 11696
+    },
+    "P5": {
+      "incidents": 1398,
+      "chars_saved": 16301
+    },
+    "P3": {
+      "incidents": 185,
+      "chars_saved": 2769
+    }
+  },
+  "by_project": {
+    "cats": {
+      "incidents": 527,
+      "chars_saved": 3482
+    },
+    "cats-effect": {
+      "incidents": 450,
+      "chars_saved": 2744
+    },
+    "fs2": {
+      "incidents": 399,
+      "chars_saved": 3009
+    },
+    "zio": {
+      "incidents": 1644,
+      "chars_saved": 12568
+    },
+    "scalatest": {
+      "incidents": 280,
+      "chars_saved": 2780
+    },
+    "http4s": {
+      "incidents": 558,
+      "chars_saved": 5267
+    },
+    "upickle": {
+      "incidents": 100,
+      "chars_saved": 1256
+    },
+    "scalatags": {
+      "incidents": 2,
+      "chars_saved": 20
+    },
+    "os-lib": {
+      "incidents": 29,
+      "chars_saved": 430
+    },
+    "requests-scala": {
+      "incidents": 9,
+      "chars_saved": 91
+    },
+    "cask": {
+      "incidents": 5,
+      "chars_saved": 51
+    },
+    "ScalaPB": {
+      "incidents": 313,
+      "chars_saved": 7077
+    },
+    "circe": {
+      "incidents": 377,
+      "chars_saved": 2909
+    },
+    "scala-cli": {
+      "incidents": 493,
+      "chars_saved": 5148
+    },
+    "sttp": {
+      "incidents": 356,
+      "chars_saved": 4011
+    },
+    "tapir": {
+      "incidents": 1250,
+      "chars_saved": 14756
+    },
+    "playframework": {
+      "incidents": 356,
+      "chars_saved": 3621
+    },
+    "quicklens": {
+      "incidents": 24,
+      "chars_saved": 131
+    }
+  }
+}

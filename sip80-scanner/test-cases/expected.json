@@ -1,0 +1,33 @@
+{
+  "cases": [
+    {
+      "file": "positive_p1.scala",
+      "incidents": 9,
+      "by_pattern": { "P1": 9 }
+    },
+    {
+      "file": "positive_p2.scala",
+      "incidents": 5,
+      "by_pattern": { "P2": 5 }
+    },
+    {
+      "file": "positive_p3.scala",
+      "incidents": 6,
+      "by_pattern": { "P3": 6 }
+    },
+    {
+      "file": "positive_p4.scala",
+      "incidents": 4,
+      "by_pattern": { "P4": 4 }
+    },
+    {
+      "file": "positive_p5.scala",
+      "incidents": 5,
+      "by_pattern": { "P1": 1, "P5": 4 }
+    },
+    {
+      "file": "negative_traps.scala",
+      "incidents": 0
+    }
+  ]
+}

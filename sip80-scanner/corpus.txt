@@ -1,0 +1,24 @@
+# One open-source Scala 3 (or Scala 3 cross-built) project per line, in the
+# form ``owner/repo``. ``run.sh`` shallow-clones each into the corpus root.
+# Comments and blank lines ignored.
+
+typelevel/cats
+typelevel/cats-effect
+typelevel/fs2
+typelevel/shapeless-3
+zio/zio
+scalatest/scalatest
+http4s/http4s
+com-lihaoyi/upickle
+com-lihaoyi/scalatags
+com-lihaoyi/os-lib
+com-lihaoyi/requests-scala
+com-lihaoyi/cask
+scalapb/ScalaPB
+circe/circe
+VirtusLab/scala-cli
+softwaremill/sttp
+softwaremill/tapir
+playframework/playframework
+lampepfl/dotty-feature-requests
+softwaremill/quicklens

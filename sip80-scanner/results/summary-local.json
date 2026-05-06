@@ -1,0 +1,53 @@
+{
+  "label": "local",
+  "total_incidents": 665,
+  "total_chars_saved": 8075,
+  "by_pattern": {
+    "P2": {
+      "incidents": 90,
+      "chars_saved": 1343
+    },
+    "P5": {
+      "incidents": 191,
+      "chars_saved": 2269
+    },
+    "P1": {
+      "incidents": 373,
+      "chars_saved": 4263
+    },
+    "P4": {
+      "incidents": 4,
+      "chars_saved": 34
+    },
+    "P3": {
+      "incidents": 7,
+      "chars_saved": 166
+    }
+  },
+  "by_project": {
+    "scala3-compiler": {
+      "incidents": 277,
+      "chars_saved": 4485
+    },
+    "scala3-library": {
+      "incidents": 163,
+      "chars_saved": 1856
+    },
+    "scala3-presentation-compiler": {
+      "incidents": 31,
+      "chars_saved": 472
+    },
+    "scala3-tests-pos": {
+      "incidents": 88,
+      "chars_saved": 539
+    },
+    "scala3-tests-run": {
+      "incidents": 76,
+      "chars_saved": 547
+    },
+    "scala3-tests-neg": {
+      "incidents": 30,
+      "chars_saved": 176
+    }
+  }
+}
