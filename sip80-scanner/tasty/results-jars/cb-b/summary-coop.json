@@ -1,0 +1,14 @@
+{
+  "total_incidents": 14,
+  "import_based": 2,
+  "total_chars_saved": 56,
+  "by_category": {
+    "call_arg": 6,
+    "match_case": 1,
+    "typed_decl": 7
+  },
+  "by_file": {
+    "core/src/main/scala/coop/ThreadF.scala": 1,
+    "core/src/main/scala/coop/ThreadT.scala": 13
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "total_incidents": 148,
+  "import_based": 32,
+  "total_chars_saved": 653,
+  "by_category": {
+    "ascription": 2,
+    "call_arg": 34,
+    "default_arg": 6,
+    "if_branch": 15,
+    "match_case": 5,
+    "typed_decl": 86
+  },
+  "by_file": {
+    "core/jvm/src/main/scala/cats/effect/IOApp.scala": 2,
+    "core/jvm/src/main/scala/cats/effect/IOCompanionPlatform.scala": 1,
+    "core/jvm/src/main/scala/cats/effect/IOFiberPlatform.scala": 1,
+    "core/jvm/src/main/scala/cats/effect/IOPlatform.scala": 1,
+    "core/jvm/src/main/scala/cats/effect/unsafe/IORuntimeBuilderPlatform.scala": 1,
+    "core/jvm/src/main/scala/cats/effect/unsafe/IORuntimeCompanionPlatform.scala": 1,
+    "core/jvm/src/main/scala/cats/effect/unsafe/IORuntimeConfigCompanionPlatform.scala": 1,
+    "core/jvm/src/main/scala/cats/effect/unsafe/SelectorSystem.scala": 5,
+    "core/jvm/src/main/scala/cats/effect/unsafe/SleepSystem.scala": 2,
+    "core/jvm/src/main/scala/cats/effect/unsafe/TimerHeap.scala": 3,
+    "core/jvm/src/main/scala/cats/effect/unsafe/WorkStealingThreadPool.scala": 5,
+    "core/jvm/src/main/scala/cats/effect/unsafe/WorkerThread.scala": 6,
+    "core/jvm/src/main/scala/cats/effect/unsafe/metrics/WorkStealingThreadPoolMetrics.scala": 1,
+    "core/shared/src/main/scala/cats/effect/IO.scala": 70,
+    "core/shared/src/main/scala/cats/effect/IODeferred.scala": 2,
+    "core/shared/src/main/scala/cats/effect/IOFiber.scala": 14,
+    "core/shared/src/main/scala/cats/effect/LiftIO.scala": 6,
+    "core/shared/src/main/scala/cats/effect/ResourceApp.scala": 1,
+    "core/shared/src/main/scala/cats/effect/SyncIO.scala": 15,
+    "core/shared/src/main/scala/cats/effect/package.scala": 2,
+    "core/shared/src/main/scala/cats/effect/tracing/Tracing.scala": 1,
+    "core/shared/src/main/scala/cats/effect/unsafe/IORuntime.scala": 1,
+    "core/shared/src/main/scala/cats/effect/unsafe/IORuntimeConfig.scala": 4,
+    "core/shared/src/main/scala/cats/effect/unsafe/WeakBag.scala": 1,
+    "core/shared/src/main/scala/cats/effect/unsafe/metrics/CpuStarvationSampler.scala": 1
+  }
+}

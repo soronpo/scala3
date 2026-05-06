@@ -1,0 +1,7 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+munit-cats-effect	core/src/main/scala/munit/catseffect/ResourceFixture.scala	43	63	call_arg	cats.effect.IO	unit	2	false	IO.unit
+munit-cats-effect	core/src/main/scala/munit/catseffect/ResourceFixture.scala	59	44	call_arg	cats.effect.IO	unit	2	false	IO.unit
+munit-cats-effect	core/src/main/scala/munit/catseffect/ResourceFixture.scala	66	40	typed_decl	cats.effect.IO	unit	2	false	IO.unit
+munit-cats-effect	core/src/main/scala/munit/catseffect/ResourceFixture.scala	68	60	typed_decl	cats.effect.IO	unit	2	false	IO.unit
+munit-cats-effect	core/src/main/scala/munit/catseffect/ResourceFixture.scala	70	58	typed_decl	cats.effect.IO	unit	2	false	IO.unit
+munit-cats-effect	core/src/main/scala/munit/catseffect/ResourceFixture.scala	72	39	typed_decl	cats.effect.IO	unit	2	false	IO.unit

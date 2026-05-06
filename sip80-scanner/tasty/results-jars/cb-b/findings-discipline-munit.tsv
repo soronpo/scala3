@@ -1,0 +1,3 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+discipline-munit	core/shared/src/main/scala/munit/DisciplineSuite.scala	39	44	call_arg	scala.collection.immutable.Set	empty	3	false	Set.empty
+discipline-munit	core/shared/src/main/scala/munit/DisciplineSuite.scala	39	44	call_arg	scala.collection.immutable.Set	empty	3	false	Set.empty

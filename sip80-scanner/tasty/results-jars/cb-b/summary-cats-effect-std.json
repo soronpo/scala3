@@ -1,0 +1,24 @@
+{
+  "total_incidents": 63,
+  "import_based": 2,
+  "total_chars_saved": 402,
+  "by_category": {
+    "call_arg": 30,
+    "default_arg": 28,
+    "typed_decl": 5
+  },
+  "by_file": {
+    "std/jvm-native/src/main/scala/cats/effect/std/Console.scala": 9,
+    "std/jvm/src/main/scala/cats/effect/std/DispatcherPlatform.scala": 1,
+    "std/jvm/src/main/scala/cats/effect/std/SecureRandomCompanionPlatform.scala": 2,
+    "std/jvm/src/main/scala/cats/effect/std/UUIDGenCompanionPlatform.scala": 1,
+    "std/shared/src/main/scala/cats/effect/std/ConsoleCrossPlatform.scala": 17,
+    "std/shared/src/main/scala/cats/effect/std/Dequeue.scala": 8,
+    "std/shared/src/main/scala/cats/effect/std/MapRef.scala": 6,
+    "std/shared/src/main/scala/cats/effect/std/PQueue.scala": 6,
+    "std/shared/src/main/scala/cats/effect/std/Queue.scala": 9,
+    "std/shared/src/main/scala/cats/effect/std/QueueSource.scala": 1,
+    "std/shared/src/main/scala/cats/effect/std/Random.scala": 1,
+    "std/shared/src/main/scala/cats/effect/std/Semaphore.scala": 2
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "total_incidents": 2,
+  "import_based": 0,
+  "total_chars_saved": 6,
+  "by_category": {
+    "call_arg": 2
+  },
+  "by_file": {
+    "core/shared/src/main/scala/munit/DisciplineSuite.scala": 2
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "total_incidents": 60,
+  "import_based": 29,
+  "total_chars_saved": 208,
+  "by_category": {
+    "call_arg": 15,
+    "typed_decl": 45
+  },
+  "by_file": {
+    "core/shared/src/main/scala/monocle/Iso.scala": 2,
+    "core/shared/src/main/scala/monocle/Lens.scala": 2,
+    "core/shared/src/main/scala/monocle/Traversal.scala": 6,
+    "core/shared/src/main/scala/monocle/function/Each.scala": 18,
+    "core/shared/src/main/scala/monocle/function/FilterIndex.scala": 7,
+    "core/shared/src/main/scala/monocle/function/Index.scala": 5,
+    "core/shared/src/main/scala/monocle/function/Plated.scala": 6,
+    "core/shared/src/main/scala/monocle/function/Reverse.scala": 8,
+    "core/shared/src/main/scala/monocle/internal/Bounded.scala": 6
+  }
+}

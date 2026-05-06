@@ -1,0 +1,27 @@
+{
+  "total_incidents": 138,
+  "import_based": 11,
+  "total_chars_saved": 877,
+  "by_category": {
+    "ascription": 4,
+    "call_arg": 5,
+    "match_case": 1,
+    "typed_decl": 128
+  },
+  "by_file": {
+    "kernel/jvm/src/main/scala/cats/effect/kernel/ResourcePlatform.scala": 1,
+    "kernel/shared/src/main/scala/cats/effect/kernel/Async.scala": 8,
+    "kernel/shared/src/main/scala/cats/effect/kernel/Clock.scala": 10,
+    "kernel/shared/src/main/scala/cats/effect/kernel/Deferred.scala": 3,
+    "kernel/shared/src/main/scala/cats/effect/kernel/GenConcurrent.scala": 8,
+    "kernel/shared/src/main/scala/cats/effect/kernel/GenSpawn.scala": 37,
+    "kernel/shared/src/main/scala/cats/effect/kernel/GenTemporal.scala": 5,
+    "kernel/shared/src/main/scala/cats/effect/kernel/MonadCancel.scala": 5,
+    "kernel/shared/src/main/scala/cats/effect/kernel/Outcome.scala": 1,
+    "kernel/shared/src/main/scala/cats/effect/kernel/Ref.scala": 2,
+    "kernel/shared/src/main/scala/cats/effect/kernel/Resource.scala": 51,
+    "kernel/shared/src/main/scala/cats/effect/kernel/Sync.scala": 4,
+    "kernel/shared/src/main/scala/cats/effect/kernel/Unique.scala": 2,
+    "kernel/shared/src/main/scala/cats/effect/kernel/syntax/ResourceSyntax.scala": 1
+  }
+}

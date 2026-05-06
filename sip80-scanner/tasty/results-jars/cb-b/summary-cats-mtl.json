@@ -1,0 +1,15 @@
+{
+  "total_incidents": 17,
+  "import_based": 2,
+  "total_chars_saved": 96,
+  "by_category": {
+    "typed_decl": 17
+  },
+  "by_file": {
+    "core/src/main/scala/cats/mtl/Ask.scala": 2,
+    "core/src/main/scala/cats/mtl/Chronicle.scala": 6,
+    "core/src/main/scala/cats/mtl/LiftKind.scala": 4,
+    "core/src/main/scala/cats/mtl/LiftValue.scala": 4,
+    "core/src/main/scala/cats/mtl/MonadPartialOrder.scala": 1
+  }
+}

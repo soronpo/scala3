@@ -1,0 +1,20 @@
+{
+  "total_incidents": 129,
+  "import_based": 39,
+  "total_chars_saved": 870,
+  "by_category": {
+    "call_arg": 45,
+    "default_arg": 20,
+    "if_branch": 25,
+    "typed_decl": 39
+  },
+  "by_file": {
+    "core/jvm/src/main/scala/scodec/bits/BitVectorCrossPlatform.scala": 1,
+    "core/jvm/src/main/scala/scodec/bits/ByteVectorCrossPlatform.scala": 6,
+    "core/shared/src/main/scala/scodec/bits/Bases.scala": 1,
+    "core/shared/src/main/scala/scodec/bits/BitVector.scala": 75,
+    "core/shared/src/main/scala/scodec/bits/ByteOrdering.scala": 2,
+    "core/shared/src/main/scala/scodec/bits/ByteVector.scala": 43,
+    "core/shared/src/main/scala/scodec/bits/HexDumpFormat.scala": 1
+  }
+}

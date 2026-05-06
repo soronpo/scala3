@@ -1,0 +1,9 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+perspective	dotty/perspective/src/main/scala/perspective/TraverseK.scala	49	84	typed_decl	perspective.TraverseK	composeCatsOutside	0	true	composeCatsOutside
+perspective	dotty/perspective/src/main/scala/perspective/InvariantK.scala	20	5	typed_decl	perspective.InvariantK	composeCatsOutside	0	true	composeCatsOutside
+perspective	dotty/perspective/src/main/scala/perspective/FunctorK.scala	42	82	typed_decl	perspective.FunctorK	composeCatsOutside	0	true	composeCatsOutside
+perspective	dotty/perspective/src/main/scala/perspective/FoldableK.scala	37	84	typed_decl	perspective.FoldableK	composeCatsOutside	0	true	composeCatsOutside
+perspective	dotty/perspective/src/main/scala/perspective/DistributiveK.scala	40	5	typed_decl	perspective.DistributiveK	composeCatsOutside	0	true	composeCatsOutside
+perspective	dotty/perspective/src/main/scala/perspective/ContravariantK.scala	18	94	typed_decl	perspective.ContravariantK	composeCatsOutside	0	true	composeCatsOutside
+perspective	dotty/perspective/src/main/scala/perspective/ApplyK.scala	35	78	typed_decl	perspective.ApplyK	composeCatsOutside	0	true	composeCatsOutside
+perspective	dotty/perspective/src/main/scala/perspective/ApplicativeK.scala	33	90	typed_decl	perspective.ApplicativeK	composeCatsOutside	0	true	composeCatsOutside

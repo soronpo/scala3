@@ -166,6 +166,54 @@ opens its own companion via wildcard import.
 
 Saved per-module under `results-jars/cb-a/`.
 
+### Scala 3 community build, category B
+
+The middle category in the community build harness, scanned at the
+latest stable version per artifact. Cats-core required adding
+``org.typelevel:scalac-compat-annotation_3:0.1.4`` to the deps
+classpath manually (it's a Provided-scope dep that ``coursier fetch
+--classpath`` excludes); the rest worked from `build.sh maven`'s
+auto-resolved deps.
+
+| Module                                              | Version     | Incidents | Chars saved | Import-based |
+|---|---|---:|---:|---:|
+| `org.typelevel:cats-core_3`                         | 2.13.0      |   421 | 2,354 |  68 |
+| `org.typelevel:cats-kernel_3`                       | 2.13.0      |   287 | 2,650 |   4 |
+| `org.typelevel:cats-laws_3`                         | 2.13.0      |   296 |   173 | 253 |
+| `org.typelevel:cats-effect_3`                       | 3.6.3       |   148 |   653 |  32 |
+| `org.typelevel:cats-effect-kernel_3`                | 3.6.3       |   138 |   877 |  11 |
+| `org.typelevel:cats-effect-std_3`                   | 3.6.3       |    63 |   402 |   2 |
+| `org.typelevel:cats-mtl_3`                          | 1.6.0       |    17 |    96 |   2 |
+| `org.typelevel:coop_3`                              | 1.3.0       |    14 |    56 |   2 |
+| `org.typelevel:discipline-core_3`                   | 1.7.0       |     0 |     0 |   0 |
+| `org.typelevel:discipline-munit_3`                  | 2.0.0       |     2 |     6 |   0 |
+| `org.typelevel:discipline-specs2_3`                 | 2.0.0       |     0 |     0 |   0 |
+| `dev.optics:monocle-core_3`                         | 3.3.0       |    60 |   208 |  29 |
+| `dev.optics:monocle-macro_3`                        | 3.3.0       |     0 |     0 |   0 |
+| `org.typelevel:munit-cats-effect_3`                 | 2.2.0       |     6 |    12 |   0 |
+| `net.katsstuff:perspective_3`                       | 0.3.0       |     8 |     0 |   8 |
+| `org.typelevel:scalacheck-effect_3`                 | 2.1.0       |    50 |    83 |  39 |
+| `org.scodec:scodec-core_3`                          | 2.3.3       |   159 | 1,396 |  10 |
+| `org.scodec:scodec-bits_3`                          | 1.2.4       |   129 |   870 |  39 |
+| **Category B total**                                |             | **1,798** | **9,836** | **499** |
+
+Two modules in the category-B test list could not be scanned by the
+TastyInspector at all: `org.scalameta:munit_3:1.3.0` (TASTy reader
+crashes on its `MacroCompatScala2.scala` Scala-2 reflection helper
+with `MatchError: val <none>`), and
+`org.typelevel:simulacrum-scalafix-annotations_3:0.5.4` (its source
+jar has corrupted timestamps that crash `jar xf` with `Negative
+time`). Both are pre-existing TastyInspector / coursier issues
+unrelated to SIP-80 detection.
+
+By detection pattern across the rest: 924 `typed_decl`, 687
+`call_arg`, 98 `if_branch`, 57 `default_arg`, 22 `match_case`, 10
+`ascription`. The cats-* family contributes 1,372 of the 1,798
+incidents (76%) — its kernel/laws/std layers are dense with typed
+typeclass instance vals, which is exactly the P1 pattern.
+
+Saved per-module under `results-jars/cb-b/`.
+
 ### Scala 3 itself (compiler + library + tooling, version 3.8.3)
 
 | Module                                | Incidents | Chars saved | Import-based |

@@ -1,0 +1,18 @@
+{
+  "total_incidents": 8,
+  "import_based": 8,
+  "total_chars_saved": 0,
+  "by_category": {
+    "typed_decl": 8
+  },
+  "by_file": {
+    "dotty/perspective/src/main/scala/perspective/ApplicativeK.scala": 1,
+    "dotty/perspective/src/main/scala/perspective/ApplyK.scala": 1,
+    "dotty/perspective/src/main/scala/perspective/ContravariantK.scala": 1,
+    "dotty/perspective/src/main/scala/perspective/DistributiveK.scala": 1,
+    "dotty/perspective/src/main/scala/perspective/FoldableK.scala": 1,
+    "dotty/perspective/src/main/scala/perspective/FunctorK.scala": 1,
+    "dotty/perspective/src/main/scala/perspective/InvariantK.scala": 1,
+    "dotty/perspective/src/main/scala/perspective/TraverseK.scala": 1
+  }
+}

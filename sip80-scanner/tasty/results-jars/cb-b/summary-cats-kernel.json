@@ -1,0 +1,39 @@
+{
+  "total_incidents": 287,
+  "import_based": 4,
+  "total_chars_saved": 2650,
+  "by_category": {
+    "call_arg": 16,
+    "if_branch": 9,
+    "match_case": 1,
+    "typed_decl": 261
+  },
+  "by_file": {
+    "kernel/.jvm/target/scala-3.3.4/src_managed/main/cats/kernel/instances/TupleInstances.scala": 220,
+    "kernel/src/main/scala-2.13+/cats/kernel/instances/LazyListInstances.scala": 2,
+    "kernel/src/main/scala-2.13+/cats/kernel/instances/StreamInstances.scala": 2,
+    "kernel/src/main/scala/cats/kernel/Comparison.scala": 8,
+    "kernel/src/main/scala/cats/kernel/Enumerable.scala": 1,
+    "kernel/src/main/scala/cats/kernel/Eq.scala": 2,
+    "kernel/src/main/scala/cats/kernel/Group.scala": 1,
+    "kernel/src/main/scala/cats/kernel/Order.scala": 4,
+    "kernel/src/main/scala/cats/kernel/Semigroup.scala": 1,
+    "kernel/src/main/scala/cats/kernel/instances/BitSetInstances.scala": 4,
+    "kernel/src/main/scala/cats/kernel/instances/ByteInstances.scala": 2,
+    "kernel/src/main/scala/cats/kernel/instances/CharInstances.scala": 2,
+    "kernel/src/main/scala/cats/kernel/instances/DeadlineInstances.scala": 3,
+    "kernel/src/main/scala/cats/kernel/instances/DurationInstances.scala": 3,
+    "kernel/src/main/scala/cats/kernel/instances/FiniteDurationInstances.scala": 4,
+    "kernel/src/main/scala/cats/kernel/instances/FunctionInstances.scala": 3,
+    "kernel/src/main/scala/cats/kernel/instances/IntInstances.scala": 2,
+    "kernel/src/main/scala/cats/kernel/instances/LongInstances.scala": 2,
+    "kernel/src/main/scala/cats/kernel/instances/MapInstances.scala": 2,
+    "kernel/src/main/scala/cats/kernel/instances/QueueInstances.scala": 2,
+    "kernel/src/main/scala/cats/kernel/instances/SetInstances.scala": 5,
+    "kernel/src/main/scala/cats/kernel/instances/ShortInstances.scala": 2,
+    "kernel/src/main/scala/cats/kernel/instances/SortedMapInstances.scala": 2,
+    "kernel/src/main/scala/cats/kernel/instances/StringInstances.scala": 2,
+    "kernel/src/main/scala/cats/kernel/instances/UUIDInstances.scala": 4,
+    "kernel/src/main/scala/cats/kernel/instances/VectorInstances.scala": 2
+  }
+}

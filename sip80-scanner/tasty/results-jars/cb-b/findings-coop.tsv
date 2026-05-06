@@ -1,0 +1,15 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+coop	core/src/main/scala/coop/ThreadT.scala	30	5	typed_decl	cats.free.FreeT	liftT	5	false	FreeT.liftT
+coop	core/src/main/scala/coop/ThreadT.scala	33	5	typed_decl	cats.free.FreeT	liftF	5	false	FreeT.liftF
+coop	core/src/main/scala/coop/ThreadT.scala	36	5	typed_decl	cats.free.FreeT	liftF	5	false	FreeT.liftF
+coop	core/src/main/scala/coop/ThreadT.scala	39	5	typed_decl	cats.free.FreeT	liftF	5	false	FreeT.liftF
+coop	core/src/main/scala/coop/ThreadT.scala	39	32	call_arg	coop.ThreadF	Done	0	true	Done
+coop	core/src/main/scala/coop/ThreadT.scala	42	5	typed_decl	cats.free.FreeT	liftF	5	false	FreeT.liftF
+coop	core/src/main/scala/coop/ThreadT.scala	45	5	typed_decl	cats.free.FreeT	liftF	5	false	FreeT.liftF
+coop	core/src/main/scala/coop/ThreadT.scala	48	5	typed_decl	cats.free.FreeT	liftF	5	false	FreeT.liftF
+coop	core/src/main/scala/coop/ThreadT.scala	56	68	call_arg	cats.free.FreeT	liftF	5	false	FreeT.liftF
+coop	core/src/main/scala/coop/ThreadT.scala	68	51	call_arg	scala.collection.immutable.Queue	empty	5	false	Queue.empty
+coop	core/src/main/scala/coop/ThreadT.scala	68	51	call_arg	scala.collection.immutable.Queue	empty	5	false	Queue.empty
+coop	core/src/main/scala/coop/ThreadT.scala	68	64	call_arg	scala.collection.immutable.Map	empty	3	false	Map.empty
+coop	core/src/main/scala/coop/ThreadT.scala	68	64	call_arg	scala.collection.immutable.Map	empty	3	false	Map.empty
+coop	core/src/main/scala/coop/ThreadF.scala	29	12	match_case	coop.ThreadF	Done	0	true	Done
