@@ -1,0 +1,25 @@
+{
+  "total_incidents": 31,
+  "import_based": 5,
+  "total_chars_saved": 319,
+  "by_category": {
+    "call_arg": 12,
+    "default_arg": 5,
+    "typed_decl": 14
+  },
+  "by_file": {
+    "jvm/src/main/scala/scala/concurrent/stm/ccstm/CCSTM.scala": 1,
+    "jvm/src/main/scala/scala/concurrent/stm/ccstm/CCSTMRefs.scala": 9,
+    "jvm/src/main/scala/scala/concurrent/stm/ccstm/RetrySet.scala": 1,
+    "jvm/src/main/scala/scala/concurrent/stm/ccstm/WaveupManager.scala": 2,
+    "shared/src/main/scala/scala/concurrent/stm/CommitBarrier.scala": 1,
+    "shared/src/main/scala/scala/concurrent/stm/Source.scala": 1,
+    "shared/src/main/scala/scala/concurrent/stm/Txn.scala": 1,
+    "shared/src/main/scala/scala/concurrent/stm/TxnExecutor.scala": 3,
+    "shared/src/main/scala/scala/concurrent/stm/ccstm/AccessHistory.scala": 1,
+    "shared/src/main/scala/scala/concurrent/stm/ccstm/InTxnImpl.scala": 5,
+    "shared/src/main/scala/scala/concurrent/stm/package.scala": 2,
+    "shared/src/main/scala/scala/concurrent/stm/skel/SimpleRandom.scala": 1,
+    "shared/src/main/scala/scala/concurrent/stm/skel/TxnHashTrie.scala": 3
+  }
+}

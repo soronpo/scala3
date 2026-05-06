@@ -1,0 +1,17 @@
+{
+  "total_incidents": 34,
+  "import_based": 0,
+  "total_chars_saved": 130,
+  "by_category": {
+    "call_arg": 10,
+    "if_branch": 21,
+    "typed_decl": 3
+  },
+  "by_file": {
+    "geom/shared/src/main/scala/de/sciss/lucre/geom/IntDistanceMeasure2D.scala": 16,
+    "geom/shared/src/main/scala/de/sciss/lucre/geom/IntDistanceMeasure3D.scala": 2,
+    "geom/shared/src/main/scala/de/sciss/lucre/geom/IntSpace.scala": 6,
+    "geom/shared/src/main/scala/de/sciss/lucre/geom/LongDistanceMeasure2D.scala": 8,
+    "geom/shared/src/main/scala/de/sciss/lucre/geom/LongSpace.scala": 2
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "total_incidents": 37,
+  "import_based": 1,
+  "total_chars_saved": 248,
+  "by_category": {
+    "call_arg": 14,
+    "typed_decl": 23
+  },
+  "by_file": {
+    "core/shared/src/main/scala/de/sciss/lucre/Event.scala": 1,
+    "core/shared/src/main/scala/de/sciss/lucre/IPush.scala": 4,
+    "core/shared/src/main/scala/de/sciss/lucre/MapObj.scala": 3,
+    "core/shared/src/main/scala/de/sciss/lucre/Observable.scala": 2,
+    "core/shared/src/main/scala/de/sciss/lucre/Push.scala": 2,
+    "core/shared/src/main/scala/de/sciss/lucre/RandomObj.scala": 1,
+    "core/shared/src/main/scala/de/sciss/lucre/edit/impl/UndoManagerImpl.scala": 6,
+    "core/shared/src/main/scala/de/sciss/lucre/impl/DummyEvent.scala": 2,
+    "core/shared/src/main/scala/de/sciss/lucre/impl/IDummyEvent.scala": 4,
+    "core/shared/src/main/scala/de/sciss/lucre/impl/ObservableImpl.scala": 4,
+    "core/shared/src/main/scala/de/sciss/lucre/impl/ReactionMapImpl.scala": 2,
+    "core/shared/src/main/scala/de/sciss/lucre/impl/TMapImpl.scala": 4,
+    "core/shared/src/main/scala/de/sciss/lucre/store/InMemoryDB.scala": 2
+  }
+}

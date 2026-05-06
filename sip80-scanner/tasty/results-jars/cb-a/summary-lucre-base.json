@@ -1,0 +1,11 @@
+{
+  "total_incidents": 1,
+  "import_based": 1,
+  "total_chars_saved": 0,
+  "by_category": {
+    "typed_decl": 1
+  },
+  "by_file": {
+    "base/shared/src/main/scala/de/sciss/lucre/Disposable.scala": 1
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "total_incidents": 29,
+  "import_based": 29,
+  "total_chars_saved": 0,
+  "by_category": {
+    "typed_decl": 29
+  },
+  "by_file": {
+    "adjunct/shared/src/main/scala/de/sciss/lucre/Adjunct.scala": 29
+  }
+}

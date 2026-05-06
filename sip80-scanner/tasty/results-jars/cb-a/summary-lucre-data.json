@@ -1,0 +1,16 @@
+{
+  "total_incidents": 25,
+  "import_based": 2,
+  "total_chars_saved": 212,
+  "by_category": {
+    "call_arg": 3,
+    "typed_decl": 22
+  },
+  "by_file": {
+    "data/shared/src/main/scala/de/sciss/lucre/data/Ancestor.scala": 11,
+    "data/shared/src/main/scala/de/sciss/lucre/data/DetSkipOctree.scala": 5,
+    "data/shared/src/main/scala/de/sciss/lucre/data/HASkipList.scala": 4,
+    "data/shared/src/main/scala/de/sciss/lucre/data/SkipList.scala": 2,
+    "data/shared/src/main/scala/de/sciss/lucre/data/TotalOrder.scala": 3
+  }
+}

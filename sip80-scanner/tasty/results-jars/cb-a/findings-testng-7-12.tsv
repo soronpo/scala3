@@ -1,0 +1,2 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+testng-7-12	src/main/scala/org/scalatestplus/testng/TestNGSuiteLike.scala	176	72	default_arg	org.scalatest.ConfigMap	empty	9	false	ConfigMap.empty

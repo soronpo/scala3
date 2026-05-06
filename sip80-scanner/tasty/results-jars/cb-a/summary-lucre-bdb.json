@@ -1,0 +1,11 @@
+{
+  "total_incidents": 2,
+  "import_based": 0,
+  "total_chars_saved": 16,
+  "by_category": {
+    "call_arg": 2
+  },
+  "by_file": {
+    "bdb/src/main/scala/de/sciss/lucre/store/BerkeleyDB.scala": 2
+  }
+}

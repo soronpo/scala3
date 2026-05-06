@@ -1,0 +1,27 @@
+{
+  "total_incidents": 65,
+  "import_based": 6,
+  "total_chars_saved": 442,
+  "by_category": {
+    "call_arg": 31,
+    "default_arg": 1,
+    "if_branch": 4,
+    "match_case": 18,
+    "typed_decl": 11
+  },
+  "by_file": {
+    "izumi-reflect/izumi-reflect/src/main/scala-3/izumi/reflect/TagMacro.scala": 8,
+    "izumi-reflect/izumi-reflect/src/main/scala-3/izumi/reflect/Tags.scala": 5,
+    "izumi-reflect/izumi-reflect/src/main/scala-3/izumi/reflect/dottyreflection/Inspect.scala": 2,
+    "izumi-reflect/izumi-reflect/src/main/scala-3/izumi/reflect/dottyreflection/Inspector.scala": 10,
+    "izumi-reflect/izumi-reflect/src/main/scala-3/izumi/reflect/dottyreflection/ReflectionUtil.scala": 2,
+    "izumi-reflect/izumi-reflect/src/main/scala/izumi/reflect/internal/fundamentals/platform/console/TrivialLogger.scala": 1,
+    "izumi-reflect/izumi-reflect/src/main/scala/izumi/reflect/macrortti/LTTOrdering.scala": 2,
+    "izumi-reflect/izumi-reflect/src/main/scala/izumi/reflect/macrortti/LTTRenderables.scala": 11,
+    "izumi-reflect/izumi-reflect/src/main/scala/izumi/reflect/macrortti/LTTSyntax.scala": 3,
+    "izumi-reflect/izumi-reflect/src/main/scala/izumi/reflect/macrortti/LightTypeTag.scala": 7,
+    "izumi-reflect/izumi-reflect/src/main/scala/izumi/reflect/macrortti/LightTypeTagInheritance.scala": 8,
+    "izumi-reflect/izumi-reflect/src/main/scala/izumi/reflect/macrortti/LightTypeTagRef.scala": 4,
+    "izumi-reflect/izumi-reflect/src/main/scala/izumi/reflect/macrortti/RuntimeAPI.scala": 2
+  }
+}

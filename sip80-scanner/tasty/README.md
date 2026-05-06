@@ -135,6 +135,37 @@ is a large algebraic data type with deeply nested case classes. The
 `dfhdl-compiler-ir` module alone has 90 top-level `case T.X` arms and
 81 nested patterns that SIP-80 would shorten.
 
+### Scala 3 community build, category A (smallest set)
+
+The Scala 3 repo's `community-build` test harness exercises the
+compiler against real OSS projects, sliced into three categories
+(A/B/C). Category A is the smallest active set: 4 named projects
+spanning 11 published modules. Maven coordinates were extracted from
+`community-build/test/scala/dotty/communitybuild/CommunityBuildTest.scala`.
+
+| Module                                          | Version    | Incidents | Chars saved | Import-based |
+|---|---|---:|---:|---:|
+| `dev.zio:izumi-reflect_3`                       | 3.0.9      |  65 |   442 |  6 |
+| `org.scala-stm:scala-stm_3`                     | 0.11.1     |  31 |   319 |  5 |
+| `org.scalatestplus:testng-7-12_3`               | 3.2.20.0   |   1 |     9 |  0 |
+| `de.sciss:lucre-adjunct_3`                      | 4.6.6      |  29 |     0 | 29 |
+| `de.sciss:lucre-base_3`                         | 4.6.6      |   1 |     0 |  1 |
+| `de.sciss:lucre-bdb_3`                          | 4.6.6      |   2 |    16 |  0 |
+| `de.sciss:lucre-confluent_3`                    | 4.6.6      |  22 |   132 |  1 |
+| `de.sciss:lucre-core_3`                         | 4.6.6      |  37 |   248 |  1 |
+| `de.sciss:lucre-data_3`                         | 4.6.6      |  25 |   212 |  2 |
+| `de.sciss:lucre-expr_3`                         | 4.6.6      |  88 |   603 |  9 |
+| `de.sciss:lucre-geom_3`                         | 4.6.6      |  34 |   130 |  0 |
+| **Category A total**                            |            | **335** | **2,111** | **54** |
+
+By detection pattern: 152 `typed_decl`, 123 `call_arg`, 29 `if_branch`,
+18 `match_case`, 13 `default_arg`. `lucre-adjunct`'s 29 incidents are
+all bare-X-after-import: a chain of `val IntSeqTop: IntSeqTop = IntSeqTop`-style
+typeclass instance vals that are visible only because `Adjunct.scala`
+opens its own companion via wildcard import.
+
+Saved per-module under `results-jars/cb-a/`.
+
 ### Scala 3 itself (compiler + library + tooling, version 3.8.3)
 
 | Module                                | Incidents | Chars saved | Import-based |

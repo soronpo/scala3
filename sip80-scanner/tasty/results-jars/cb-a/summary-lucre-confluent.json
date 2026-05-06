@@ -1,0 +1,21 @@
+{
+  "total_incidents": 22,
+  "import_based": 1,
+  "total_chars_saved": 132,
+  "by_category": {
+    "call_arg": 12,
+    "default_arg": 6,
+    "typed_decl": 4
+  },
+  "by_file": {
+    "confluent/shared/src/main/scala/de/sciss/lucre/confluent/Cursor.scala": 5,
+    "confluent/shared/src/main/scala/de/sciss/lucre/confluent/MeldInfo.scala": 2,
+    "confluent/shared/src/main/scala/de/sciss/lucre/confluent/VersionInfo.scala": 1,
+    "confluent/shared/src/main/scala/de/sciss/lucre/confluent/impl/CacheMapImpl.scala": 4,
+    "confluent/shared/src/main/scala/de/sciss/lucre/confluent/impl/CursorImpl.scala": 4,
+    "confluent/shared/src/main/scala/de/sciss/lucre/confluent/impl/GlobalState.scala": 1,
+    "confluent/shared/src/main/scala/de/sciss/lucre/confluent/impl/Mixin.scala": 2,
+    "confluent/shared/src/main/scala/de/sciss/lucre/confluent/impl/PathImpl.scala": 2,
+    "confluent/shared/src/main/scala/de/sciss/lucre/confluent/impl/TxnImpl.scala": 1
+  }
+}

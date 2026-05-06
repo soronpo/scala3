@@ -27,8 +27,11 @@ fi
 #   Read the TASTy major.minor of <jar>'s first .tasty entry and pick the
 #   smallest published scala3-tasty-inspector_3 that can read it. The TASTy
 #   major.minor maps directly to scala3-compiler 3.<minor>; we pick the
-#   latest patch in that line for max bug-fix coverage. Echoes the version
-#   (e.g. "3.8.3") on stdout.
+#   latest patch in that line for max bug-fix coverage. Our inspector's
+#   source itself uses post-3.3 syntax (extension methods, ``using`` etc.)
+#   so we floor the build version at 3.3.x; the older runtime forms are
+#   forward-compatible with TASTy 28.0..28.<minor> through that floor.
+#   Echoes the version (e.g. "3.8.3") on stdout.
 pick_inspector_version() {
   local jar="$1"
   local tv
@@ -38,6 +41,7 @@ pick_inspector_version() {
     *) return 1 ;;
   esac
   local minor="${tv#28.}"
+  if [ "$minor" -lt 3 ]; then minor=3; fi
   java -jar "$CS_JAR" complete-dep \
         "org.scala-lang:scala3-tasty-inspector_3:3.${minor}." 2>/dev/null \
     | grep -E '^3\.[0-9]+\.[0-9]+$' | tail -1

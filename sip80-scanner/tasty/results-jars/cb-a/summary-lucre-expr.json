@@ -1,0 +1,38 @@
+{
+  "total_incidents": 88,
+  "import_based": 9,
+  "total_chars_saved": 603,
+  "by_category": {
+    "call_arg": 39,
+    "if_branch": 4,
+    "typed_decl": 45
+  },
+  "by_file": {
+    "expr/shared/src/main/scala/de/sciss/lucre/Artifact.scala": 1,
+    "expr/shared/src/main/scala/de/sciss/lucre/Primitives.scala": 2,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/CellView.scala": 4,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/Context.scala": 2,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/ExElem.scala": 3,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/Graph.scala": 3,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/graph/Act.scala": 2,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/graph/Attr.scala": 4,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/graph/CaseDef.scala": 1,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/graph/Edit.scala": 2,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/graph/Ex.scala": 2,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/graph/Obj.scala": 10,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/graph/StringFormat.scala": 1,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/graph/TimeStamp.scala": 1,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/graph/UnaryOp.scala": 3,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/graph/impl/BinaryMappedObjIExpr.scala": 4,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/graph/impl/ExpandedObjAttr.scala": 4,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/graph/impl/ObjCellViewVarImpl.scala": 2,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/graph/impl/UnaryMappedObjIExpr.scala": 4,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/impl/CellViewImpl.scala": 6,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/impl/ContextImpl.scala": 18,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/impl/ExObjBridgeImpl.scala": 1,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/impl/IActionImpl.scala": 2,
+    "expr/shared/src/main/scala/de/sciss/lucre/expr/impl/ITriggerConsumer.scala": 2,
+    "expr/shared/src/main/scala/de/sciss/lucre/impl/BiGroupImpl.scala": 2,
+    "expr/shared/src/main/scala/de/sciss/lucre/impl/BiPinImpl.scala": 2
+  }
+}

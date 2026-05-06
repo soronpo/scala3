@@ -1,0 +1,11 @@
+{
+  "total_incidents": 1,
+  "import_based": 0,
+  "total_chars_saved": 9,
+  "by_category": {
+    "default_arg": 1
+  },
+  "by_file": {
+    "src/main/scala/org/scalatestplus/testng/TestNGSuiteLike.scala": 1
+  }
+}
