@@ -1,0 +1,3 @@
+project	file	line	col	category	expected	member	chars_saved	import_based	source
+scala3-staging	staging/src/scala/quoted/staging/QuoteCompiler.scala	52	45	call_arg	dotty.tools.dotc.core.Mode	ReadPositions	4	false	Mode.ReadPositions
+scala3-staging	staging/src/scala/quoted/staging/Compiler.scala	63	38	typed_decl	scala.quoted.staging.Compiler$.Settings	make	0	true	make

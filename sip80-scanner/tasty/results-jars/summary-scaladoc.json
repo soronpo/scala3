@@ -1,0 +1,38 @@
+{
+  "total_incidents": 89,
+  "import_based": 1,
+  "total_chars_saved": 630,
+  "by_category": {
+    "call_arg": 32,
+    "default_arg": 7,
+    "if_branch": 18,
+    "match_case": 24,
+    "nested_pattern": 2,
+    "typed_decl": 6
+  },
+  "by_file": {
+    "scaladoc/src/dotty/tools/scaladoc/ExternalDocLink.scala": 3,
+    "scaladoc/src/dotty/tools/scaladoc/Inkuire.scala": 8,
+    "scaladoc/src/dotty/tools/scaladoc/ScalaModuleProvider.scala": 2,
+    "scaladoc/src/dotty/tools/scaladoc/Scaladoc.scala": 2,
+    "scaladoc/src/dotty/tools/scaladoc/api.scala": 4,
+    "scaladoc/src/dotty/tools/scaladoc/parsers/WikiCodeBlockParser.scala": 2,
+    "scaladoc/src/dotty/tools/scaladoc/renderers/DotDiagramBuilder.scala": 1,
+    "scaladoc/src/dotty/tools/scaladoc/renderers/MemberRenderer.scala": 8,
+    "scaladoc/src/dotty/tools/scaladoc/renderers/SiteRenderer.scala": 1,
+    "scaladoc/src/dotty/tools/scaladoc/tasty/ClassLikeSupport.scala": 4,
+    "scaladoc/src/dotty/tools/scaladoc/tasty/InkuireSupport.scala": 10,
+    "scaladoc/src/dotty/tools/scaladoc/tasty/NameNormalizer.scala": 8,
+    "scaladoc/src/dotty/tools/scaladoc/tasty/PackageSupport.scala": 2,
+    "scaladoc/src/dotty/tools/scaladoc/tasty/ScalaDocSupport.scala": 2,
+    "scaladoc/src/dotty/tools/scaladoc/tasty/TastyParser.scala": 1,
+    "scaladoc/src/dotty/tools/scaladoc/tasty/comments/CommentSyntaxArgs.scala": 3,
+    "scaladoc/src/dotty/tools/scaladoc/tasty/comments/MarkdownParser.scala": 1,
+    "scaladoc/src/dotty/tools/scaladoc/tasty/comments/MemberLookup.scala": 7,
+    "scaladoc/src/dotty/tools/scaladoc/tasty/comments/Queries.scala": 2,
+    "scaladoc/src/dotty/tools/scaladoc/tasty/comments/markdown/SnippetRenderer.scala": 8,
+    "scaladoc/src/dotty/tools/scaladoc/tasty/comments/wiki/Parser.scala": 1,
+    "scaladoc/src/dotty/tools/scaladoc/transformers/SealedMarksGraphTransformer.scala": 1,
+    "scaladoc/src/dotty/tools/scaladoc/translators/ScalaSignatureProvider.scala": 8
+  }
+}

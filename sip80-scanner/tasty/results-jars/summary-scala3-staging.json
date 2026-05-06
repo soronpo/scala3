@@ -1,0 +1,13 @@
+{
+  "total_incidents": 2,
+  "import_based": 1,
+  "total_chars_saved": 4,
+  "by_category": {
+    "call_arg": 1,
+    "typed_decl": 1
+  },
+  "by_file": {
+    "staging/src/scala/quoted/staging/Compiler.scala": 1,
+    "staging/src/scala/quoted/staging/QuoteCompiler.scala": 1
+  }
+}

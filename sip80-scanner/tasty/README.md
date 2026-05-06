@@ -135,6 +135,42 @@ is a large algebraic data type with deeply nested case classes. The
 `dfhdl-compiler-ir` module alone has 90 top-level `case T.X` arms and
 81 nested patterns that SIP-80 would shorten.
 
+### Scala 3 itself (compiler + library + tooling, version 3.8.3)
+
+| Module                                | Incidents | Chars saved | Import-based |
+|---|---:|---:|---:|
+| `scala-library:3.8.3`                 |   290 |  1,688 |  98 |
+| `scala3-compiler_3:3.8.3`             | 1,010 | 12,295 | 343 |
+| `scala3-presentation-compiler_3:3.8.3`|   177 |  1,817 |   2 |
+| `scaladoc_3:3.8.3`                    |    89 |    630 |   1 |
+| `scala3-staging_3:3.8.3`              |     2 |      4 |   1 |
+| `tasty-core_3:3.8.3`                  |     1 |     15 |   0 |
+| `scala3-tasty-inspector_3:3.8.3`      |     0 |      0 |   0 |
+| **Scala 3 total**                     | **1,569** | **16,449** | **445** |
+
+The compiler dwarfs the rest because it's a 100k-LOC codebase rich in
+ADT pattern matching, `Set.empty`/`List.empty` factory calls, and
+`Mode`/`CompileMode`-style flag enums — all situations where SIP-80
+fires. Many of `scala3-compiler`'s 343 import-based hits come from
+generated `semanticdb` and `scalajs-ir` code that wildcard-imports the
+case-object members of large enums.
+
+| Module                            | Version | Incidents | Chars saved | Import-based |
+|---|---|---:|---:|---:|
+| `dfhdl-core_3`                    | 0.17.0  |   223 | 1,823 |  44 |
+| `dfhdl-internals_3`               | 0.17.0  |    17 |   126 |   0 |
+| `dfhdl-compiler-ir_3`             | 0.17.0  |   296 | 2,295 |  39 |
+| `dfhdl-compiler-stages_3`         | 0.17.0  |   216 | 2,138 |   2 |
+| `dfhdl-platforms_3`               | 0.17.0  |    55 |   357 |  13 |
+| `dfhdl-devices_3`                 | 0.12.0  |     5 |    79 |   0 |
+| **DFHDL total**                   |         | **812** | **6,818** | **98** |
+
+DFHDL is a heavy DSL user (the very pattern SIP-80 was designed for): a
+Scala 3 hardware-description language whose intermediate representation
+is a large algebraic data type with deeply nested case classes. The
+`dfhdl-compiler-ir` module alone has 90 top-level `case T.X` arms and
+81 nested patterns that SIP-80 would shorten.
+
 (Stage A's chars-saved are slightly inflated by an off-by-one in its
 formula — `len(prefix) + 1` instead of `len(prefix)`; Stage B uses
 `text.length - (memberName.length + 1)` directly, which is the actual
