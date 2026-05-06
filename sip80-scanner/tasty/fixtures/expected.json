@@ -1,0 +1,23 @@
+{
+  "_comment": "Per-fixture expected SIP-80 incidents. Verified against the inspector's output. ``positive`` = explicit T.X positions; ``import_based`` = bare X resolved via wildcard import or same-companion scope; ``chars_saved`` = sum of textLen - (memberLen + 1) over positive findings.",
+  "totals": {
+    "total_incidents": 39,
+    "import_based": 4,
+    "total_chars_saved": 205,
+    "by_category": {
+      "ascription": 1,
+      "call_arg": 11,
+      "default_arg": 5,
+      "if_branch": 2,
+      "match_case": 6,
+      "nested_pattern": 2,
+      "typed_decl": 12
+    },
+    "by_file": {
+      "fixtures/FalsePositives.scala": 0,
+      "fixtures/Negatives.scala": 0,
+      "fixtures/Patterns.scala": 28,
+      "fixtures/StageB.scala": 11
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "total_incidents": 2,
+  "import_based": 0,
+  "total_chars_saved": 18,
+  "by_category": {
+    "call_arg": 2
+  },
+  "by_file": {
+    "scalatags/src/scalatags/generic/SvgAttrs.scala": 1,
+    "scalatags/src/scalatags/text/TagFactory.scala": 1
+  }
+}
