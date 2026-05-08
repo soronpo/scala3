@@ -39,7 +39,7 @@ metals.sbt
 .scala-build
 sbt-launch.jar
 
-.claude
+.claude/settings.local.json
 
 # Partest
 dotty.jar
