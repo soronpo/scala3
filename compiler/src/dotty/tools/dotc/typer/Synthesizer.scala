@@ -49,10 +49,35 @@ class Synthesizer(typer: Typer)(using @constructorOnly c: Context):
         // variables are approximated incrementally. This is a minimization of some ZIO code.
         // So in order to keep backwards compatibility (where before we _only_ did 2) we
         // add that special case.
-        def isGroundConstr(tp: Type): Boolean = tp.dealias match
-          case tvar: TypeVar if ctx.typerState.constraint.contains(tvar) => false
-          case pref: TypeParamRef if ctx.typerState.constraint.contains(pref) => false
-          case tp: AndOrType => isGroundConstr(tp.tp1) && isGroundConstr(tp.tp2)
+        // i26005: `fullUpperBound` may combine `nonParamBounds(p).hi` with a
+        // level-adjusted copy of the same param via `atLevel`, producing a
+        // bound shaped like `TypeVar(P) & TypeParamRef(P')` where P and P' are
+        // distinct objects (different binder) but refer to the same logical
+        // parameter. The original `isGroundConstr` returns false on each side,
+        // missing this case. Recognise it by comparing `paramName`s and recurse
+        // into the TypeVar's own bound chain. `depth` guards against cycles.
+        def paramOfBound(t: Type): TypeParamRef | Null = t match
+          case t: TypeParamRef => t
+          case t: TypeVar if !t.isInstantiated => t.origin
+          case _ => null
+        def sameLogicalParam(t1: Type, t2: Type): Boolean =
+          val p1 = paramOfBound(t1)
+          val p2 = paramOfBound(t2)
+          (p1 ne null) && (p2 ne null)
+            && p1.paramNum == p2.paramNum
+            && p1.paramName.toString == p2.paramName.toString
+        def isGroundConstr(tp: Type, depth: Int = 0): Boolean = tp.dealias match
+          case tvar: TypeVar if ctx.typerState.constraint.contains(tvar) =>
+            depth > 0 &&
+              (if tvar.hasUpperBound then isGroundConstr(fullUpperBound(tvar.origin), depth - 1)
+               else if tvar.hasLowerBound then isGroundConstr(fullLowerBound(tvar.origin), depth - 1)
+               else false)
+          case pref: TypeParamRef if ctx.typerState.constraint.contains(pref) =>
+            depth > 0 && (ctx.typerState.constraint.entry(pref) match
+              case bounds: TypeBounds => isGroundConstr(bounds.hi, depth - 1)
+              case _ => true)
+          case tp: AndOrType if sameLogicalParam(tp.tp1, tp.tp2) => isGroundConstr(tp.tp1, depth = 3)
+          case tp: AndOrType => isGroundConstr(tp.tp1, depth) && isGroundConstr(tp.tp2, depth)
           case _ => true
         instArg(
             if tvar.hasLowerBound then
