@@ -2393,8 +2393,23 @@ object Parsers {
 
     def typeDependingOn(location: Location): Tree =
       if location.inParens then typ()
-      else if location.inPattern then rejectWildcardType(refinedType())
+      else if location.inPattern then rejectWildcardType(patternTypeAscription())
       else infixType()
+
+    /** A type ascription RHS for typed patterns. Like `RefinedType` but also
+     *  accepts `&`-chained intersection types, so that `case x: A & B` parses
+     *  (mirroring the auto-rewrite from `case x: A with B`). Does not consume
+     *  `|`, since `|` after a typed pattern is the pattern-alternative
+     *  separator. See scala/scala3#26015.
+     */
+    def patternTypeAscription(): Tree =
+      def rest(t: Tree): Tree =
+        if isIdent(nme.raw.AMP) && nextCanFollowOperator(canStartInfixTypeTokens) then
+          val op = typeIdent()
+          val rhs = refinedType()
+          rest(atSpan(startOffset(t)) { InfixOp(t, op, rhs) })
+        else t
+      rest(refinedType())
 
 /* ----------- EXPRESSIONS ------------------------------------------------ */
 
@@ -3362,10 +3377,13 @@ object Parsers {
               pat.sourcePos,
               MigrationVersion.AscriptionAfterPattern)
 
-    /**  Pattern1     ::= PatVar `:` RefinedType
-     *                  | [‘-’] integerLiteral `:` RefinedType
-     *                  | [‘-’] floatingPointLiteral `:` RefinedType
+    /**  Pattern1     ::= PatVar `:` PatternTypeAscription
+     *                  | [‘-’] integerLiteral `:` PatternTypeAscription
+     *                  | [‘-’] floatingPointLiteral `:` PatternTypeAscription
      *                  | Pattern2
+     *
+     *   PatternTypeAscription
+     *                ::= RefinedType {`&` RefinedType}
      */
     def pattern1(location: Location = Location.InPattern): Tree =
       val pat = pattern2(location)
