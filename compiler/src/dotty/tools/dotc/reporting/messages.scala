@@ -3083,18 +3083,33 @@ class MissingImplicitArgument(
       case tp: AppliedType =>
         val tycon = tp.typeConstructor
         val typeParams = if tycon.isLambdaSub then tycon.hkTypeParams else tycon.typeParams
-        recur(tycon, typeParams ::: params, tp.args ::: args)
+        // i22348: when an outer alias binds A=Double and we're looking at
+        // an inner application like IsIntLike[A] inside the alias body, the
+        // inner `A` is the outer alias's parameter symbol, not Double. To
+        // make the user-visible message print the bound value, substitute
+        // the previously-accumulated (params, args) into each new arg
+        // before pushing it onto the args stack.
+        val newArgs = tp.args.map { arg =>
+          val argSym = arg.typeSymbol
+          val idx = params.indexWhere(p =>
+            (arg eq p.paramRef) || (argSym.exists && argSym.name == p.paramName))
+          if idx >= 0 then args(idx) else arg
+        }
+        recur(tycon, typeParams ::: params, newArgs ::: args)
       case tp: TypeRef =>
         userDefinedImplicitNotFoundTypeMessageFor(tp.symbol, params, args)
-          .orElse(recur(tp.info))
+          // Carry the accumulated (params, args) into the alias body so the
+          // substitution applies when we descend into IsIntLike[A] inside
+          // the body of Indirection[A=Double] (#22348).
+          .orElse(recur(tp.info, params, args))
       case tp: ClassInfo =>
         tp.baseClasses.iterator
           .map(userDefinedImplicitNotFoundTypeMessageFor(_))
           .find(_.isDefined).flatten
       case tp: TypeProxy =>
-        recur(tp.superType)
+        recur(tp.superType, params, args)
       case tp: AndType =>
-        recur(tp.tp1).orElse(recur(tp.tp2))
+        recur(tp.tp1, params, args).orElse(recur(tp.tp2, params, args))
       case _ =>
         None
     recur(pt)

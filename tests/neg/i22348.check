@@ -1,0 +1,11 @@
+-- [E172] Type Error: tests/neg/i22348.scala:18:34 ---------------------------------------------------------------------
+18 |@main def main(): Unit = f[Double] // error // warn
+   |                                  ^
+   |                                  Comparing Double to Int
+-- [E184] Type Warning: tests/neg/i22348.scala:18:10 -------------------------------------------------------------------
+18 |@main def main(): Unit = f[Double] // error // warn
+   |          ^
+   |          Match type reduction failed since selector Double
+   |          matches none of the cases
+   |
+   |              case Int => (true : Boolean)
