@@ -20,6 +20,7 @@ import ast.{Trees, tpd, untpd}
 import tpd.closureDef
 import typer.{Implicits, Namer, Applications}
 import typer.ProtoTypes.*
+import config.{Feature, SourceVersion}
 import Trees.*
 import TypeApplications.*
 import NameKinds.{WildcardParamName, DefaultGetterName}
@@ -88,7 +89,12 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
   override def nameString(name: Name): String =
     def strippedName = if printDebug then name else name.stripModuleClassSuffix
     if ctx.settings.YdebugNames.value then strippedName.debugString
-    else if name.isTypeName && name.is(WildcardParamName) && !printDebug then "_"
+    else if name.isTypeName && name.is(WildcardParamName) && !printDebug then
+      // i19608: under -source:future, the modern wildcard syntax is `?`;
+      // `_` is deprecated. Render the wildcard with the user-facing syntax
+      // for the current source level so error messages don't suggest the
+      // deprecated form.
+      if Feature.sourceVersion.isAtLeast(SourceVersion.future) then "?" else "_"
     else super.nameString(strippedName)
 
   override protected def simpleNameString(sym: Symbol): String =

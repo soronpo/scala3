@@ -1,0 +1,7 @@
+-- [E184] Type Warning: tests/warn/i19608.scala:14:4 -------------------------------------------------------------------
+14 |val r: String = bar[Int](1) // warn
+   |    ^
+   |    Match type reduction failed since selector Int
+   |    matches none of the cases
+   |
+   |        case Bar[?] => Nothing
