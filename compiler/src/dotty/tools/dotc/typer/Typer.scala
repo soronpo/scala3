@@ -5033,8 +5033,41 @@ class Typer(@constructorOnly nestingLevel: Int = 0) extends Namer
               case _ =>
           case _ =>
 
+      // Try to add necessary constraints derived from comparing `wtp`'s base
+      // type for `pt`'s class against `pt`. This may help when an overall
+      // subtype check fails (and thus rolls back its constraints) due to a
+      // stuck match type appearing in a covariant position, but contravariant
+      // or invariant arguments could still be constrained. See i12339.scala.
+      def constrainNecessary(): Boolean =
+        pt match
+          case pt: AppliedType =>
+            val ptCls = pt.tycon.classSymbol
+            if !ptCls.exists then false
+            else wtp.baseType(ptCls) match
+              case base: AppliedType if base.args.length == pt.args.length =>
+                val tparams = ptCls.typeParams
+                var changed = false
+                base.args.lazyZip(pt.args).lazyZip(tparams).foreach { (baseArg, ptArg, tparam) =>
+                  val v = tparam.paramVarianceSign
+                  baseArg match
+                    case tv: TypeVar if !tv.isInstantiated =>
+                      val prev = ctx.typerState.constraint
+                      // Contravariant: tv >: ptArg; covariant: tv <: ptArg; invariant: both.
+                      if v <= 0 && !ptArg.isInstanceOf[TypeBounds] then
+                        ptArg <:< tv
+                      if v >= 0 && !ptArg.isInstanceOf[TypeBounds] then
+                        tv <:< ptArg
+                      if ctx.typerState.constraint ne prev then changed = true
+                    case _ =>
+                }
+                changed
+              case _ => false
+          case _ => false
+
       def recover(failure: SearchFailureType) =
         if canDefineFurther(wtp) || canDefineFurther(pt) then readapt(tree)
+        else if constrainNecessary() && (canDefineFurther(wtp) || canDefineFurther(pt)) then
+          readapt(tree)
         else
           val tree1 = healAdapt(tree, pt)
           if tree1 ne tree then readapt(tree1)
