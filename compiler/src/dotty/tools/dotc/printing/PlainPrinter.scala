@@ -593,7 +593,11 @@ class PlainPrinter(_ctx: Context) extends Printer {
         val (tparamStr, rhs) = decomposeLambdas(tp)
         val binder = rhs match
           case tp: AliasingBounds =>
-            " = " ~ toText(tp.alias)
+            // i13614: normalize the alias RHS so a match-type alias renders
+            // as its reduced form when one is available, matching the
+            // pre-pickling print of refinement types.
+            val alias = tp.alias.normalized
+            " = " ~ toText(alias)
           case TypeBounds(lo, hi) if !printDebug && Feature.ccEnabledSomewhere && isCaptureVarBounds(lo, hi) =>
             toTextCaptureVarBounds(lo, hi)
           case TypeBounds(lo, hi) =>
