@@ -131,18 +131,39 @@ object ProtoTypes {
         case _ =>
           false
 
+      // True if the result type contains a match alias whose scrutinee
+      // (its type argument) refers to a method parameter that has been
+      // approximated to a TypeVar or WildcardType by `resultTypeApprox`.
+      // In that case the match alias cannot reduce yet and the
+      // approximated lower bound (typically `Nothing`) of the scrutinee
+      // can pollute constraints on type variables in `pt` by yielding
+      // an "uninhabited selector" reduction failure. We avoid this by
+      // approximating `pt` with wildcards before constraining.
+      // See https://github.com/scala/scala3/issues/13250.
+      def hasDependentMatchAliasInResult: Boolean =
+        mt match
+          case mt: MethodType if mt.isResultDependent =>
+            mt.resultType.existsPart {
+              case at: AppliedType if at.isMatchAlias =>
+                at.args.exists(_.existsPart {
+                  case _: TypeVar | _: WildcardType | _: TermParamRef => true
+                  case _ => false
+                })
+              case _ => false
+            }
+          case _ => false
+
       constFoldException(pt) || {
         if Inlines.isInlineable(meth) then
           // Stricter behaviour in 3.4+: do not apply `wildApprox` to non-transparent inlines
-          // unless their return type is a MatchType. In this case there's no reason
-          // not to constrain type variables in the expected type. For transparent inlines
-          // we do not want to constrain type variables in the expected type since the
-          // actual return type might be smaller after instantiation. For inlines returning
-          // MatchTypes we do not want to constrain because the MatchType might be more
-          // specific after instantiation. TODO: Should we also use Wildcards for non-inline
-          // methods returning MatchTypes?
+          // unless their return type is a MatchType (or contains a dependent one). In this
+          // case there's no reason not to constrain type variables in the expected type.
+          // For transparent inlines we do not want to constrain type variables in the
+          // expected type since the actual return type might be smaller after instantiation.
+          // For inlines returning MatchTypes we do not want to constrain because the
+          // MatchType might be more specific after instantiation.
           if Feature.sourceVersion.isAtLeast(SourceVersion.`3.4`) then
-            if meth.is(Transparent) || mt.resultType.isMatchAlias then
+            if meth.is(Transparent) || mt.resultType.isMatchAlias || hasDependentMatchAliasInResult then
               constrainResult(mt, wildApprox(pt))
               // do not constrain the result type of transparent inline methods
               true
@@ -152,6 +173,9 @@ object ProtoTypes {
             // Best-effort to fix https://github.com/scala/scala3/issues/9685 in the 3.3.x series
             // while preserving source compatibility as much as possible
             constrainResult(mt, wildApprox(pt)) || meth.is(Transparent)
+        else if hasDependentMatchAliasInResult then
+          constrainResult(mt, wildApprox(pt))
+          true
         else constrainResult(mt, pt)
       }
 
