@@ -5388,7 +5388,13 @@ object Types extends TypeUtils {
       case Alias(sym) => i"a type alias `${sym.name}`"
       case RefiningBounds(name) => i"an abstract type member `$name` with bounds that need verification"
       case StructuralType(name) => i"an abstract type member `$name` that does not refine a member in its parent"
-      case UnaccountedTypeParam(name) => i"an unaccounted type parameter `$name`"
+      case UnaccountedTypeParam(name) =>
+        // i22943: captures must appear directly in the pattern, or nested
+        // inside a type constructor that is covariant in that position.
+        // A capture nested under an invariant or contravariant tycon
+        // becomes a type-test (it does not bind), leaving the case lambda
+        // parameter unaccounted for.
+        i"an unaccounted type parameter `$name` (a capture must appear directly in the pattern, or nested inside a covariant type constructor)"
   end MatchTypeCaseError
 
   type MatchTypeCaseResult = MatchTypeCasePattern | MatchTypeCaseError
