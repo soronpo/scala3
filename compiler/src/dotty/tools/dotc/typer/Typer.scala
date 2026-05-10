@@ -2861,6 +2861,19 @@ class Typer(@constructorOnly nestingLevel: Int = 0) extends Namer
       report.error(MatchTypeScrutineeCannotBeHigherKinded(sel1Tpe), sel1.srcPos)
     val pt1 = if (bound1.isEmpty) pt else bound1.tpe
     val cases1 = tree.cases.mapconserve(typedTypeCase(_, sel1Tpe, pt1))
+    // i19799/i20433: report illegal match-type cases at the definition site
+    // for every illegal case, regardless of position. The reducer (in
+    // TypeComparer.recur) only emits an error for the first illegal case
+    // it visits during reduction, so a preceding stuck-or-reduced legal
+    // case would silently mask later illegal cases.
+    if sourceVersion.isAtLeast(`3.4`) then
+      cases1.foreach { case1 =>
+        MatchTypeCaseSpec.analyze(case1.tpe) match
+          case spec @ MatchTypeCaseSpec.LegacyPatMat(_, err) if err != null =>
+            val errorText = MatchTypeTrace.illegalPatternText(sel1Tpe, spec)
+            report.error(MatchTypeLegacyPattern(errorText), case1.srcPos)
+          case _ =>
+      }
     val bound2 = if tree.bound.isEmpty then
       val lub = cases1.foldLeft(defn.NothingType: Type): (acc, case1) =>
         if !acc.exists then NoType
