@@ -1,10 +1,12 @@
 // https://github.com/scala/scala3/issues/19098
-type Rec[F[_], A] = A match
-  case Int => Int | F[Rec[F, Int]]
-  case _ => A | F[Rec[F, A]]
+import scala.collection.mutable
 
-type Json = Rec[List, Int]
+type Rec[JA[_], JO[_], A] = A match {
+  case Int => Int | JA[Rec[JA, JO, Int]] | JO[Rec[JA, JO, Int]]
+  case _ => A | JA[Rec[JA, JO, A]] | JO[Rec[JA, JO, A]]
+}
+type Json = Rec[List, [A] =>> Map[String, A], Int]
 
-def arr(values: Json*): Json = ???
+def arr(values: Json*): Json = mutable.ArrayBuffer[Json](values*)
 
-val x: Json = arr(1)
+val x = arr(1)
