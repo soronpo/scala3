@@ -27,15 +27,13 @@ def dependentlyTypedMod2[N <: NatT](n: N): Mod2[N] = n match
   case Succ(Zero()): Succ[Zero] => Succ(Zero()) // warning
   case Succ(Succ(predPredN)): Succ[Succ[_]] => dependentlyTypedMod2(predPredN) // warning
 
-inline def inlineDependentlyTypedMod2[N <: NatT](inline n: N): Mod2[N] = inline n match
-  case Zero(): Zero => Zero() // warning
-  case Succ(Zero()): Succ[Zero] => Succ(Zero()) // warning
-  case Succ(Succ(predPredN)): Succ[Succ[_]] => inlineDependentlyTypedMod2(predPredN) // warning
-
-transparent inline def transparentInlineDependentlyTypedMod2[N <: NatT](inline n: N): Mod2[N] = inline n match
-  case Zero(): Zero => Zero() // warning
-  case Succ(Zero()): Succ[Zero] => Succ(Zero()) // warning
-  case Succ(Succ(predPredN)): Succ[Succ[_]] => transparentInlineDependentlyTypedMod2(predPredN) // warning
+// Note: `inline def f[N]: Mod2[N] = inline n match ...` is no longer accepted —
+// `inline match` and match types have different semantics. The combination is
+// unsound (see scala/scala3#24760) and is now rejected. The recursive
+// `inlineDependentlyTypedMod2` / `transparentInlineDependentlyTypedMod2`
+// patterns from the original test were exactly this disallowed shape, and
+// have been removed; the non-dependent inline variants above still test the
+// reduction behavior at call sites.
 
 def foo(n: NatT): NatT = mod2(n) match
   case Succ(Zero()) => Zero()
@@ -57,5 +55,3 @@ inline def transparentInlineFoo(inline n: NatT): NatT = inline transparentInline
   println(transparentInlineMod2(Succ(Succ(Succ(Zero()))))) // prints Succ(Zero()), as expected
   println(transparentInlineFoo(Succ(Succ(Succ(Zero()))))) // prints Zero(), as expected
   println(dependentlyTypedMod2(Succ(Succ(Succ(Zero()))))) // runtime error; unexpected
-  println(inlineDependentlyTypedMod2(Succ(Succ(Succ(Zero()))))) // prints Succ(Zero()), as expected
-  println(transparentInlineDependentlyTypedMod2(Succ(Succ(Succ(Zero()))))) // prints Succ(Zero()), as expected
