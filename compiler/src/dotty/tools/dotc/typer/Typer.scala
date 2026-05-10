@@ -2231,7 +2231,12 @@ class Typer(@constructorOnly nestingLevel: Int = 0) extends Namer
             }
 
         val result = pt.underlyingNormalizable match {
-          case mt: MatchType if isMatchTypeShaped(mt) =>
+          // i24760: An `inline match` must not be typed against a match type
+          // expected type by splitting case-by-case. The two have different
+          // semantics and the split is unsound: a branch whose body has a
+          // different concrete type than the corresponding match-type case
+          // body can be silently accepted and lead to a ClassCastException.
+          case mt: MatchType if !tree.isInline && isMatchTypeShaped(mt) =>
             typedDependentMatchFinish(tree, sel1, selType, tree.cases, mt)
           case _ =>
             typedMatchFinish(tree, sel1, selType, tree.cases, pt)
