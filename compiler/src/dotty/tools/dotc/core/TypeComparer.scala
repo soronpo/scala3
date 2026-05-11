@@ -1188,6 +1188,20 @@ class TypeComparer(@constructorOnly initctx: Context) extends ConstraintHandling
               if samePkg(pre1.symbol, pre2.cls) then return true
             case _ =>
         case _ =>
+      // For the purpose of selecting a type member, a `SkolemType` and its
+      // `info` are interchangeable prefixes (the member denotation comes from
+      // the info either way). Two `SkolemType`s with the same info are also
+      // interchangeable here, though they remain distinct singleton values.
+      // This is needed when a tree pickled with a skolemized prefix is
+      // unpickled at an inline expansion site: pickling drops the skolem
+      // wrapper, leaving the raw info as the prefix, while a freshly retyped
+      // selection at the use site re-skolemizes. See pos/i11.
+      def equivPrefixForTypeMember(p1: Type, p2: Type): Boolean = (p1, p2) match
+        case (sk1: SkolemType, sk2: SkolemType) => sk1.info eq sk2.info
+        case (sk1: SkolemType, p2) => sk1.info eq p2
+        case (p1, sk2: SkolemType) => p1 eq sk2.info
+        case _ => false
+      if equivPrefixForTypeMember(pre1, pre2) then return true
       isSubType(pre1, pre2)
     end isSubPrefix
 
