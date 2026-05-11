@@ -335,6 +335,7 @@ class TypeComparer(@constructorOnly initctx: Context) extends ConstraintHandling
                 ctx.erasedTypes
                 || sym1.isStaticOwner
                 || isSubPrefix(tp1.prefix, tp2.prefix)
+                || equivClassTypeParamPrefixOnRetype(sym1, tp1.prefix, tp2.prefix)
                 || thirdTryNamed(tp2)
               else
                 (tp1.name eq tp2.name)
@@ -1188,22 +1189,31 @@ class TypeComparer(@constructorOnly initctx: Context) extends ConstraintHandling
               if samePkg(pre1.symbol, pre2.cls) then return true
             case _ =>
         case _ =>
-      // For the purpose of selecting a type member, a `SkolemType` and its
-      // `info` are interchangeable prefixes (the member denotation comes from
-      // the info either way). Two `SkolemType`s with the same info are also
-      // interchangeable here, though they remain distinct singleton values.
-      // This is needed when a tree pickled with a skolemized prefix is
-      // unpickled at an inline expansion site: pickling drops the skolem
-      // wrapper, leaving the raw info as the prefix, while a freshly retyped
-      // selection at the use site re-skolemizes. See pos/i11.
-      def equivPrefixForTypeMember(p1: Type, p2: Type): Boolean = (p1, p2) match
-        case (sk1: SkolemType, sk2: SkolemType) => sk1.info eq sk2.info
-        case (sk1: SkolemType, p2) => sk1.info eq p2
-        case (p1, sk2: SkolemType) => p1 eq sk2.info
-        case _ => false
-      if equivPrefixForTypeMember(pre1, pre2) then return true
       isSubType(pre1, pre2)
     end isSubPrefix
+
+    /** Treat `T#I` and `Skolem(T).I` as equivalent prefixes for projecting
+     *  a class type parameter `I`, but only while re-typing a pickled tree
+     *  (typically inside an inline-expansion via `Inliner.InlineTyper` or a
+     *  macro splice via another `ReTyper`). The two refer to the same
+     *  type-argument position, so the substitution is safe in that context
+     *  even though the underlying skolems differ as singleton values.
+     *
+     *  Outside re-typing this equivalence would be unsound (distinct
+     *  `SkolemType`s are distinct values, e.g. `xs(0).T` vs `xs(1).T` for
+     *  `xs: List[C[?]]`), so it must remain restricted to the re-typing
+     *  path. Reference equality on `info` keeps this targeted to the
+     *  TASTy-round-trip shape, where the freshly retyped selection's
+     *  `QualSkolemType.info` is the same cached `AppliedType` instance
+     *  produced by unpickling. See pos/i11.
+     */
+    def equivClassTypeParamPrefixOnRetype(sym: Symbol, pre1: Type, pre2: Type): Boolean =
+      sym.isAllOf(ClassTypeParam) && ctx.typer.isInstanceOf[typer.ReTyper] && {
+        (pre1, pre2) match
+          case (p1, sk2: SkolemType) => !p1.isStable && (p1 eq sk2.info)
+          case (sk1: SkolemType, p2) => !p2.isStable && (sk1.info eq p2)
+          case _ => false
+      }
 
     /** Compare `tycon[args]` with `other := otherTycon[otherArgs]`, via `>:>` if fromBelow is true, `<:<` otherwise
      *  (we call this relationship `~:~` in the rest of this comment).
