@@ -1,0 +1,7 @@
+-- [E008] Not Found Error: tests/neg/i26310.scala:8:24 -----------------------------------------------------------------
+8 |    val x: Int = choose.m // error
+  |                 ^^^^^^^^
+  |                 value m is not a member of A.
+  |                 Note that `choose` is a `transparent inline` method, so its result type
+  |                 is not refined here: a `transparent inline` call is not expanded while typing the body
+  |                 of an enclosing `inline` method, only once that method is itself inlined.

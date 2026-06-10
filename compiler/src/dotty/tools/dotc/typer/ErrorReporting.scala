@@ -278,6 +278,11 @@ object ErrorReporting {
            |Extension methods were tried, but the search failed with:
            |
            |${nested.head.explanation.indented(4)}"""
+      else if inlines.Inlines.inInlineMethod && qual1.symbol.isAllOf(Inline | Transparent) then
+        i""".
+           |Note that `${qual1.symbol.name}` is a `transparent inline` method, so its result type
+           |is not refined here: a `transparent inline` call is not expanded while typing the body
+           |of an enclosing `inline` method, only once that method is itself inlined."""
       else if tree.hasAttachment(desugar.MultiLineInfix) then
         i""".
            |Note that `${tree.name}` is treated as an infix operator in Scala 3.
