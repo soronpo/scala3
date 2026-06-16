@@ -1,0 +1,8 @@
+-- Error: tests/neg/typemacro-positive/Test_2.scala:4:6 ----------------------------------------------------------------
+4 |  val a: Positive[-3] = ??? // error
+  |  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |  Positive expects a positive Int, but got -3
+-- Error: tests/neg/typemacro-positive/Test_2.scala:5:6 ----------------------------------------------------------------
+5 |  val b: Positive[0] = ???  // error
+  |  ^^^^^^^^^^^^^^^^^^^^^^^^
+  |  Positive expects a positive Int, but got 0

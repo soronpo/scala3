@@ -1,0 +1,7 @@
+-- [E007] Type Mismatch Error: tests/neg/typemacro-gcd/Test_2.scala:5:23 -----------------------------------------------
+5 |  val x: Gcd[12, 18] = 5 // error
+  |                       ^
+  |                       Found:    (5 : Int)
+  |                       Required: (6 : Int)
+  |
+  | longer explanation available when compiling with `-explain`

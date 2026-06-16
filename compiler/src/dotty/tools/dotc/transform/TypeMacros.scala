@@ -83,8 +83,12 @@ object TypeMacros:
           implAlts match
             case d :: Nil =>
               val closure = buildClosure(d.symbol, tp.args)
-              val pos: SrcPos = tmSym.srcPos
-              val inlinedFrom = TypeTree(tp)
+              // Report macro errors at the use site (the enclosing tree being
+              // typed) when available, falling back to the macro's definition.
+              val pos: SrcPos =
+                val t = ctx.tree
+                if t != null && !t.isEmpty && t.span.exists then t.srcPos else tmSym.srcPos
+              val inlinedFrom = TypeTree(tp).withSpan(pos.span)
               val tpt = inContext(quoted.MacroExpansion.context(inlinedFrom)) {
                 Splicer.spliceType(closure, pos, pos, MacroClassLoader.fromContext)
               }
