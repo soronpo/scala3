@@ -2191,7 +2191,7 @@ object Parsers {
      *                |  ‘$’ ‘{’ Block ‘}’     -- unless inside quoted type pattern
      *                |  ‘$’ ‘{’ Pattern ‘}’   --   when inside quoted type pattern
      */
-    def splice(isType: Boolean): Tree =
+    def splice(isType: Boolean, allowInTypeDef: Boolean = false): Tree =
       val start = in.offset
       atSpan(in.offset) {
         val inPattern = (staged & StageKind.QuotedPattern) != 0
@@ -2206,7 +2206,12 @@ object Parsers {
             in.nextToken()
             id
           }
-        if isType then
+        if isType && allowInTypeDef then
+          // A type-macro splice: `type M[X] <: U = ${ impl[X] }`. The enclosing
+          // `typeDefOrDcl` consumes this `Splice` to extract the implementation
+          // name; it never reaches the typer as a type.
+          Splice(expr)
+        else if isType then
           val msg = "Type splicing with `$` in quotes not supported anymore"
           val inPattern = (staged & StageKind.QuotedPattern) != 0
           val hint =
@@ -4464,7 +4469,7 @@ object Parsers {
         val tparams = typeParamClauseOpt(ParamOwner.Hk)
         val vparamss = funParamClauses()
 
-        def makeTypeDef(rhs: Tree): Tree = {
+        def makeTypeDef(rhs: Tree, extraMods: Modifiers = mods): Tree = {
           val rhs1 = lambdaAbstractAll(tparams :: vparamss, rhs)
           val tdef = TypeDef(nameIdent.name.toTypeName, rhs1)
           if nameIdent.isBackquoted then
@@ -4473,33 +4478,64 @@ object Parsers {
             tdef.pushAttachment(CaptureVar, ())
             // putting the attachment here as well makes post-processing in the typer easier
             rhs.pushAttachment(CaptureVar, ())
-          finalizeDef(tdef, mods, start)
+          finalizeDef(tdef, extraMods, start)
         }
+
+        // Type macro: `type M[X] <: U = ${ implName[X] }`. The mandatory upper
+        // bound licenses the splice; we lower it to an abstract, upper-bounded
+        // type carrying `@internal.TypeMacro("implName")`.
+        def makeTypeMacroDef(upper: Tree, spl: Tree): Tree =
+          def implName(t: Tree): String = t match
+            case Splice(e)        => implName(e)
+            case TypeApply(fn, _) => implName(fn)
+            case Apply(fn, _)     => implName(fn)
+            case Select(_, name)  => name.toString
+            case Ident(name)      => name.toString
+            case _                => ""
+          val name = implName(spl)
+          if name.isEmpty then
+            syntaxError(em"a type macro right-hand side must be a single macro call, e.g. `$${ impl[X] }`", spl.span)
+          val annot = New(scalaAnnotationInternalDot(typeName("TypeMacro")),
+            (Literal(Constant(name)) :: Nil) :: Nil).withSpan(spl.span)
+          makeTypeDef(TypeBoundsTree(EmptyTree, upper), mods.withAddedAnnotation(annot))
 
         in.token match {
           case EQUALS =>
             in.nextToken()
-            makeTypeDef(typeDefRHS())
+            if isSplice then
+              syntaxError(em"a type macro requires an explicit upper bound, e.g. `type M[X] <: U = $${ impl[X] }`", in.offset)
+              splice(isType = true, allowInTypeDef = true) // consume, then fall through
+              makeTypeDef(TypeBoundsTree(EmptyTree, EmptyTree))
+            else makeTypeDef(typeDefRHS())
           case SUBTYPE | SUPERTYPE =>
             typeAndCtxBounds(tname) match
               case bounds: TypeBoundsTree if in.token == EQUALS =>
                 val eqOffset = in.skipToken()
-                var rhs = typeDefRHS()
-                rhs match {
-                  case mtt: MatchTypeTree =>
-                    bounds match {
-                      case TypeBoundsTree(EmptyTree, upper, _) =>
-                        rhs = MatchTypeTree(upper, mtt.selector, mtt.cases)
-                      case _ =>
-                        syntaxError(em"cannot combine lower bound and match type alias", eqOffset)
-                    }
-                  case _ =>
-                    if mods.is(Opaque) then
-                      rhs = TypeBoundsTree(bounds.lo, bounds.hi, rhs)
-                    else
-                      syntaxError(em"cannot combine bound and alias", eqOffset)
-                }
-                makeTypeDef(rhs)
+                if isSplice then
+                  val spl = splice(isType = true, allowInTypeDef = true)
+                  bounds match
+                    case TypeBoundsTree(EmptyTree, upper, _) if !upper.isEmpty =>
+                      makeTypeMacroDef(upper, spl)
+                    case _ =>
+                      syntaxError(em"a type macro requires an upper bound (`<: U`) and no lower bound", eqOffset)
+                      makeTypeDef(bounds)
+                else
+                  var rhs = typeDefRHS()
+                  rhs match {
+                    case mtt: MatchTypeTree =>
+                      bounds match {
+                        case TypeBoundsTree(EmptyTree, upper, _) =>
+                          rhs = MatchTypeTree(upper, mtt.selector, mtt.cases)
+                        case _ =>
+                          syntaxError(em"cannot combine lower bound and match type alias", eqOffset)
+                      }
+                    case _ =>
+                      if mods.is(Opaque) then
+                        rhs = TypeBoundsTree(bounds.lo, bounds.hi, rhs)
+                      else
+                        syntaxError(em"cannot combine bound and alias", eqOffset)
+                  }
+                  makeTypeDef(rhs)
               case bounds => makeTypeDef(bounds)
           case SEMI | NEWLINE | NEWLINES | COMMA | RBRACE | OUTDENT | EOF =>
             makeTypeDef(typeAndCtxBounds(tname))

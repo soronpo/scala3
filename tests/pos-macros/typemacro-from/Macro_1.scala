@@ -1,5 +1,4 @@
 import scala.quoted.*
-import scala.annotation.typeMacro
 import scala.NamedTuple.{NamedTuple, AnyNamedTuple}
 
 /** `NamedTuple.From` re-implemented as an ordinary library *type macro*, instead
@@ -8,9 +7,9 @@ import scala.NamedTuple.{NamedTuple, AnyNamedTuple}
  */
 object structural:
 
-  @typeMacro type From[T] <: AnyNamedTuple
+  type From[T] <: AnyNamedTuple = ${ fromImpl[T] }
 
-  def From[T: Type](using Quotes): Type[? <: AnyNamedTuple] =
+  def fromImpl[T: Type](using Quotes): Type[? <: AnyNamedTuple] =
     import quotes.reflect.*
     val arg = TypeRepr.of[T].dealias
     val sym = arg.typeSymbol

@@ -1,5 +1,4 @@
 import scala.quoted.*
-import scala.annotation.typeMacro
 
 object gcdlib:
 
@@ -7,9 +6,9 @@ object gcdlib:
    *  This operation is *not* provided by `scala.compiletime.ops` and would
    *  otherwise require a new compiler intrinsic.
    */
-  @typeMacro type Gcd[A <: Int, B <: Int] <: Int
+  type Gcd[A <: Int, B <: Int] <: Int = ${ gcdImpl[A, B] }
 
-  def Gcd[A <: Int : Type, B <: Int : Type](using Quotes): Type[? <: Int] =
+  def gcdImpl[A <: Int : Type, B <: Int : Type](using Quotes): Type[? <: Int] =
     import quotes.reflect.*
     def gcd(x: Int, y: Int): Int = if y == 0 then x else gcd(y, x % y)
     (TypeRepr.of[A], TypeRepr.of[B]) match

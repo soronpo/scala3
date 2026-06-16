@@ -9,14 +9,20 @@ import util.SrcPos
 import config.Printers.typr
 import reporting.trace
 
-/** Reduction of *type macros* (see `scala.annotation.typeMacro`).
+/** Reduction of *type macros*.
  *
- *  A type macro is an abstract, upper-bounded type member `M[X1, ..., Xn] <: U`
- *  annotated with `@scala.annotation.typeMacro`. Its reduction is delegated to a
- *  same-named metaprogram in the same enclosing scope with the shape:
+ *  A type macro is written with the bound-licensed splice syntax
  *
  *  ```scala
- *  def M[X1 : Type, ..., Xn : Type](using Quotes): Type[? <: U] = ...
+ *  type M[X1, ..., Xn] <: U = ${ impl[X1, ..., Xn] }
+ *  ```
+ *
+ *  which the parser lowers to an abstract, upper-bounded type member
+ *  `M[X1, ..., Xn] <: U` carrying `@scala.annotation.internal.TypeMacro("impl")`.
+ *  The implementation is a metaprogram in the type's enclosing scope of shape:
+ *
+ *  ```scala
+ *  def impl[X1 : Type, ..., Xn : Type](using Quotes): Type[? <: U] = ...
  *  ```
  *
  *  Reduction is lazy: `M[A1, ..., An]` only reduces once every argument is
@@ -63,26 +69,31 @@ object TypeMacros:
 
   private def reduceConcrete(tp: AppliedType, tmSym: Symbol)(using Context): Type =
     trace(i"reduce type macro $tp", typr, show = true) {
-      // Find the implementation: a same-named method in the macro's owner whose
-      // type-parameter arity matches the number of arguments.
-      val implAlts = tmSym.owner.info.member(tmSym.name.toTermName).alternatives.filter { d =>
-        d.symbol.is(Method) && (d.info match
-          case pt: PolyType => pt.paramNames.length == tp.args.length
-          case _ => tp.args.isEmpty)
-      }
-      implAlts match
-        case d :: Nil =>
-          val closure = buildClosure(d.symbol, tp.args)
-          val pos: SrcPos = tmSym.srcPos
-          val inlinedFrom = TypeTree(tp)
-          val tpt = inContext(quoted.MacroExpansion.context(inlinedFrom)) {
-            Splicer.spliceType(closure, pos, pos, MacroClassLoader.fromContext)
+      // The `@internal.TypeMacro("impl")` annotation (synthesised from the
+      // `type M[X] <: U = ${ impl[X] }` syntax) names the implementation method,
+      // looked up in the type's enclosing scope by type-parameter arity.
+      val implName = tmSym.getAnnotation(defn.TypeMacroAnnot).flatMap(_.argumentConstantString(0))
+      implName match
+        case Some(name) if name.nonEmpty =>
+          val implAlts = tmSym.owner.info.member(name.toTermName).alternatives.filter { d =>
+            d.symbol.is(Method) && (d.info match
+              case pt: PolyType => pt.paramNames.length == tp.args.length
+              case _ => tp.args.isEmpty)
           }
-          val res = tpt.tpe
-          if res.exists && !res.isError then res else NoType
-        case _ =>
-          report.error(em"Could not find a unique type-macro implementation method `${tmSym.name}` for $tp", tmSym.srcPos)
-          NoType
+          implAlts match
+            case d :: Nil =>
+              val closure = buildClosure(d.symbol, tp.args)
+              val pos: SrcPos = tmSym.srcPos
+              val inlinedFrom = TypeTree(tp)
+              val tpt = inContext(quoted.MacroExpansion.context(inlinedFrom)) {
+                Splicer.spliceType(closure, pos, pos, MacroClassLoader.fromContext)
+              }
+              val res = tpt.tpe
+              if res.exists && !res.isError then res else NoType
+            case _ =>
+              report.error(em"Could not find a unique type-macro implementation method `$name` for $tp", tmSym.srcPos)
+              NoType
+        case _ => NoType
     }
 
   /** Build the interpretable closure `(q: Quotes) => impl[args](using Type.of[args](using q), ...)(using q)`. */

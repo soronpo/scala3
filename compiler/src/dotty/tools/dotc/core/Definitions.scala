@@ -1133,7 +1133,7 @@ class Definitions {
   @tu lazy val ShowAsInfixAnnot: ClassSymbol = requiredClass("scala.annotation.showAsInfix")
   @tu lazy val FunctionalInterfaceAnnot: ClassSymbol = requiredClass("java.lang.FunctionalInterface")
   @tu lazy val TargetNameAnnot: ClassSymbol = requiredClass("scala.annotation.targetName")
-  @tu lazy val TypeMacroAnnot: ClassSymbol = requiredClass("scala.annotation.typeMacro")
+  @tu lazy val TypeMacroAnnot: ClassSymbol = requiredClass("scala.annotation.internal.TypeMacro")
   @tu lazy val VarargsAnnot: ClassSymbol = requiredClass("scala.annotation.varargs")
   @tu lazy val ParamAliasAnnot: ClassSymbol = requiredClass("scala.caps.internal.paramAlias")
   @tu lazy val InferredAnnot = requiredClass("scala.caps.internal.inferred")
