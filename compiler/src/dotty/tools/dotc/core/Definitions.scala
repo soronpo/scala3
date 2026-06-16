@@ -1133,6 +1133,7 @@ class Definitions {
   @tu lazy val ShowAsInfixAnnot: ClassSymbol = requiredClass("scala.annotation.showAsInfix")
   @tu lazy val FunctionalInterfaceAnnot: ClassSymbol = requiredClass("java.lang.FunctionalInterface")
   @tu lazy val TargetNameAnnot: ClassSymbol = requiredClass("scala.annotation.targetName")
+  @tu lazy val TypeMacroAnnot: ClassSymbol = requiredClass("scala.annotation.typeMacro")
   @tu lazy val VarargsAnnot: ClassSymbol = requiredClass("scala.annotation.varargs")
   @tu lazy val ParamAliasAnnot: ClassSymbol = requiredClass("scala.caps.internal.paramAlias")
   @tu lazy val InferredAnnot = requiredClass("scala.caps.internal.inferred")
@@ -1466,6 +1467,13 @@ class Definitions {
 
   final def isNamedTuple_From(sym: Symbol)(using Context): Boolean =
     sym.name == tpnme.From && sym.owner == NamedTupleModule.moduleClass
+
+  /** Is `sym` an abstract type member marked with `@scala.annotation.typeMacro`?
+   *  Such types are reduced by invoking a same-named companion metaprogram.
+   *  See `dotty.tools.dotc.transform.TypeMacros`.
+   */
+  final def isTypeMacro(sym: Symbol)(using Context): Boolean =
+    sym.isType && sym.hasAnnotation(TypeMacroAnnot)
 
   final def isInto(sym: Symbol)(using Context): Boolean =
     sym.name == tpnme.into && sym.owner == ConversionModuleClass
