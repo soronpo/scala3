@@ -1473,7 +1473,10 @@ class Definitions {
    *  See `dotty.tools.dotc.transform.TypeMacros`.
    */
   final def isTypeMacro(sym: Symbol)(using Context): Boolean =
-    sym.isType && sym.hasAnnotation(TypeMacroAnnot)
+    // Use `unforcedAnnotation` rather than `hasAnnotation`: this predicate runs
+    // during type normalization (a hot path), and forcing symbol completion here
+    // would perturb cyclic-reference detection for unrelated types.
+    sym.isType && sym.unforcedAnnotation(TypeMacroAnnot).isDefined
 
   final def isInto(sym: Symbol)(using Context): Boolean =
     sym.name == tpnme.into && sym.owner == ConversionModuleClass
