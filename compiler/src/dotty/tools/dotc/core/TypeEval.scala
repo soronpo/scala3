@@ -14,6 +14,10 @@ import TypeOps.nestedPairs
 object TypeEval:
 
   def tryCompiletimeConstantFold(tp: AppliedType)(using Context): Type = tp.tycon match
+    case tycon: TypeRef if defn.isTypeMacro(tycon.symbol) =>
+      // A `@scala.annotation.typeMacro` type is reduced by running a metaprogram.
+      transform.TypeMacros.reduce(tp)
+
     case tycon: TypeRef if defn.isCompiletimeAppliedType(tycon.symbol) =>
 
       extension (tp: Type) def fixForEvaluation: Type =

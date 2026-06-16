@@ -1,0 +1,4 @@
+-- Error: tests/neg/typemacro-from/Test_2.scala:5:6 --------------------------------------------------------------------
+5 |  val x: From[Int] = ??? // error
+  |  ^^^^^^^^^^^^^^^^^^^^^^
+  |  NamedTuple.From: scala.Int is not a concrete case class

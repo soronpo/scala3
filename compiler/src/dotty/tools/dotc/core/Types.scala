@@ -4772,7 +4772,7 @@ object Types extends TypeUtils {
      */
     override def underlyingNormalizable(using Context): Type =
       if ctx.period != validUnderlyingNormalizable then tycon match
-        case tycon: TypeRef if defn.isCompiletimeAppliedType(tycon.symbol) =>
+        case tycon: TypeRef if defn.isCompiletimeAppliedType(tycon.symbol) || defn.isTypeMacro(tycon.symbol) =>
           cachedUnderlyingNormalizable = this
           validUnderlyingNormalizable = ctx.period
         case _ =>

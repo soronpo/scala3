@@ -86,6 +86,48 @@ object Splicer {
       }
   }
 
+  /** Splice a *type macro*: interpret `tree`, which must evaluate to a
+   *  `Quotes => scala.quoted.Type[?]`, and return the fully spliced `TypeTree`.
+   *  This mirrors `splice` above but reads the macro result back as a type
+   *  instead of an expression. Used by `dotty.tools.dotc.transform.TypeMacros`.
+   */
+  def spliceType(tree: Tree, splicePos: SrcPos, spliceExpansionPos: SrcPos, classLoader: ClassLoader)(using Context): Tree =
+    val owner = ctx.owner
+    val macroOwner = newSymbol(owner, nme.MACROkw, Macro | Synthetic, defn.AnyType, coord = tree.span)
+    try
+      val sliceContext = SpliceScope.contextWithNewSpliceScope(splicePos.sourcePos).withOwner(macroOwner)
+      inContext(sliceContext) {
+        val oldContextClassLoader = Thread.currentThread().getContextClassLoader
+        Thread.currentThread().setContextClassLoader(classLoader)
+        try {
+          val interpreter = new SpliceInterpreter(splicePos, classLoader)
+          val interpretedType = interpreter.interpret[Quotes => scala.quoted.Type[?]](tree)
+          val interpretedTree = interpretedType.fold(tree)(macroClosure => PickledQuotes.quotedTypeToTree(macroClosure(QuotesImpl())))
+          checkEscapedVariables(interpretedTree, macroOwner)
+        } finally {
+          Thread.currentThread().setContextClassLoader(oldContextClassLoader)
+        }
+      }.changeOwner(macroOwner, ctx.owner)
+    catch {
+      case ex: CompilationUnit.SuspendException =>
+        throw ex
+      case ex: scala.quoted.runtime.StopMacroExpansion =>
+        if !ctx.reporter.hasErrors then
+          report.error("Macro expansion was aborted by the macro without any errors reported. Macros should issue errors to end-users when aborting a macro expansion with StopMacroExpansion.", splicePos)
+        TypeTree(ErrorType(em"type macro expansion was stopped"))
+      case ex: StopInterpretation =>
+        report.error(ex.msg, ex.pos)
+        TypeTree(ErrorType(ex.msg))
+      case ex: Exception =>
+        val msg =
+          em"""Failed to evaluate type macro.
+              |  Caused by ${ex.getClass}: ${if (ex.getMessage == null) "" else ex.getMessage}
+              |    ${ex.getStackTrace.takeWhile(_.getClassName != "dotty.tools.dotc.transform.Splicer$").drop(1).mkString("\n    ")}
+            """
+        report.error(msg, spliceExpansionPos)
+        TypeTree(ErrorType(msg))
+    }
+
   /** Checks that no symbol that was generated within the macro expansion has an out of scope reference */
   def checkEscapedVariables(tree: Tree, expansionOwner: Symbol)(using Context): tree.type =
     new TreeTraverser {
