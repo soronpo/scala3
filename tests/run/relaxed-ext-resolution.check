@@ -1,0 +1,5 @@
+Lib.bar(Int)
+local.bar(String)
+Outer.baz(Int)
+local.baz(String)
+shadow.bar(Int)

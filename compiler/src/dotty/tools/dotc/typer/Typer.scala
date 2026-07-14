@@ -216,11 +216,28 @@ class Typer(@constructorOnly nestingLevel: Int = 0) extends Namer
    *                     collected in case `findRef` is called from an expansion of
    *                     an extension method, i.e. when `e.m` is expanded to `m(e)` and
    *                     a reference for `m` is searched. `null` in all other situations.
+   *   @param excludeSyms symbols that must be ignored during resolution, as if they
+   *                     were not in scope. Used to implement the cross-level fallback
+   *                     of extension-method resolution (see `tryExtensionOrConversion`):
+   *                     when the extension methods at the closest precedence level do
+   *                     not apply to the receiver, they are excluded and `findRef` is
+   *                     re-run to surface the next precedence level's candidates.
+   *                     Empty in all other situations.
    */
   def findRef(name: Name, pt: Type, required: FlagSet, excluded: FlagSet, pos: SrcPos,
-      altImports: mutable.ListBuffer[TermRef] | Null = null)(using Context): Type = {
+      altImports: mutable.ListBuffer[TermRef] | Null = null,
+      excludeSyms: Set[Symbol] = Set.empty)(using Context): Type = {
     val refctx = ctx
     val noImports = ctx.mode.is(Mode.InPackageClauseName)
+
+    /** Drop from `denot` any alternative whose symbol is in `excludeSyms`, so that
+     *  an already-tried, inapplicable extension method does not re-shadow the
+     *  candidates further out. A no-op (and free) on the common path where
+     *  `excludeSyms` is empty.
+     */
+    def notExcluded(denot: Denotation): Denotation =
+      if excludeSyms.isEmpty then denot
+      else denot.filterWithPredicate(sd => !excludeSyms.contains(sd.symbol))
     def suppressErrors = excluded.is(PhantomSymbol)
       // when searching for references shadowed by a constructor proxy, do not report errors
     def fail(msg: Message) =
@@ -349,11 +366,11 @@ class Typer(@constructorOnly nestingLevel: Int = 0) extends Namer
                 ctx.javaFindMember(name, pre, lookInCompanion = true, required, excluded)
               else
                 pre.memberBasedOnFlags(name, required, excluded)
-            val denot0 = findMember(excluded)
+            val denot0 = notExcluded(findMember(excluded))
             var accessibleDenot = denot0.accessibleFrom(pre)(using refctx)
             if !accessibleDenot.exists && denot0.hasAltWith(_.symbol.is(Private)) then
               accessibleDenot =
-                findMember(excluded | Private).accessibleFrom(pre)(using refctx)
+                notExcluded(findMember(excluded | Private)).accessibleFrom(pre)(using refctx)
             // Pass refctx so that any errors are reported in the context of the
             // reference instead of the context of the import scope
             if accessibleDenot.exists then
@@ -513,7 +530,7 @@ class Typer(@constructorOnly nestingLevel: Int = 0) extends Namer
                 checkNoOuterDefs(denot, outer, prevCtx)
 
           if isNewDefScope then
-            val defDenot = ctx.denotNamed(name, required, excluded)
+            val defDenot = notExcluded(ctx.denotNamed(name, required, excluded))
             if (qualifies(defDenot)) {
               val found =
                 if (isSelfDenot(defDenot)) curOwner.enclosingClass.thisType
@@ -4339,37 +4356,64 @@ class Typer(@constructorOnly nestingLevel: Int = 0) extends Namer
     def selectionProto = SelectionProto(tree.name, mbrProto, compat, privateOK = inSelect, tree.nameSpan)
 
     def tryExtension(using Context): Tree =
-      val altImports = new mutable.ListBuffer[TermRef]()
-      findRef(tree.name, WildcardType, ExtensionMethod, EmptyFlags, qual.srcPos, altImports) match
-        case ref: TermRef =>
-          def tryExtMethod(ref: TermRef)(using Context) =
-            val refTree = withOriginalName(tpd.ref(ref).withSpan(tree.nameSpan), tree.name)
-            extMethodApply(untpd.TypedSplice(refTree), qual, pt)
-          if altImports.isEmpty then
-            tryExtMethod(ref)
-          else
-            // Try all possible imports and collect successes and failures
+      def tryExtMethod(ref: TermRef)(using Context) =
+        val refTree = withOriginalName(tpd.ref(ref).withSpan(tree.nameSpan), tree.name)
+        extMethodApply(untpd.TypedSplice(refTree), qual, pt)
+
+      def pick(alt: (Tree, TyperState)): Tree =
+        val (app, ts) = alt
+        ts.commit()
+        app
+
+      // Symbols of the extension methods that were tried at a closer precedence
+      // level but did not apply to the receiver. They are excluded when we fall
+      // back to the next level out, so that name shadowing does not hide an
+      // applicable extension method defined in an enclosing scope. See the
+      // "Relaxed Extension Method Resolution" proposal.
+      val excluded = mutable.Set.empty[Symbol]
+      // The failure to report if no precedence level yields an applicable
+      // candidate: the one from the closest (highest-precedence) level, so the
+      // diagnostic matches the method the user most likely intended.
+      var firstFailure: (Tree, TyperState) | Null = null
+
+      def tryLevel(using Context): Tree =
+        val altImports = new mutable.ListBuffer[TermRef]()
+        findRef(tree.name, WildcardType, ExtensionMethod, EmptyFlags, qual.srcPos,
+            altImports, excluded.toSet) match
+          case ref: TermRef =>
+            // All same-precedence-level candidates: the primary reference plus
+            // any same-level import alternatives collected by `findRef` (SIP-54).
+            val candidates = ref :: altImports.toList
+            // Try each candidate at this level and collect successes and failures.
             val successes, failures = new mutable.ListBuffer[(Tree, TyperState)]
-            for alt <- ref :: altImports.toList do
+            for alt <- candidates do
               val nestedCtx = ctx.fresh.setNewTyperState()
               val app = tryExtMethod(alt)(using nestedCtx)
               (if nestedCtx.reporter.hasErrors then failures else successes)
                 += ((app, nestedCtx.typerState))
-            typr.println(i"multiple extension methods, success: ${successes.toList}, failure: ${failures.toList}")
-
-            def pick(alt: (Tree, TyperState)): Tree =
-              val (app, ts) = alt
-              ts.commit()
-              app
+            typr.println(i"extension methods at level, success: ${successes.toList}, failure: ${failures.toList}")
 
             successes.toList match
-              case Nil => pick(failures.head)
               case success :: Nil => pick(success)
               case (expansion1, _) :: (expansion2, _) :: _ =>
                 report.error(AmbiguousExtensionMethod(tree, expansion1, expansion2), tree.srcPos)
                 expansion1
-        case _ =>
-          EmptyTree
+              case Nil =>
+                // No candidate at this precedence level applies to the receiver.
+                // Remember the closest level's failure, exclude these candidates,
+                // and fall back to the next precedence level out.
+                if firstFailure == null && failures.nonEmpty then
+                  firstFailure = failures.head
+                candidates.foreach(excluded += _.symbol)
+                tryLevel
+          case _ =>
+            // No further precedence level binds `name` as an extension method.
+            // Surface the closest level's original failure, if any.
+            val f = firstFailure
+            if f == null then EmptyTree else pick(f)
+      end tryLevel
+
+      tryLevel
     end tryExtension
 
     def nestedFailure(ex: TypeError) =
