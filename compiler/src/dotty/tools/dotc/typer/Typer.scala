@@ -4384,20 +4384,35 @@ class Typer(@constructorOnly nestingLevel: Int = 0) extends Namer
             // All same-precedence-level candidates: the primary reference plus
             // any same-level import alternatives collected by `findRef` (SIP-54).
             val candidates = ref :: altImports.toList
-            // Try each candidate at this level and collect successes and failures.
-            val successes, failures = new mutable.ListBuffer[(Tree, TyperState)]
+            // Try each candidate at this level and collect successes and failures,
+            // keeping each success paired with the extension method it came from
+            // so that ties can be broken by specificity below.
+            val successes = new mutable.ListBuffer[(TermRef, Tree, TyperState)]
+            val failures = new mutable.ListBuffer[(Tree, TyperState)]
             for alt <- candidates do
               val nestedCtx = ctx.fresh.setNewTyperState()
               val app = tryExtMethod(alt)(using nestedCtx)
-              (if nestedCtx.reporter.hasErrors then failures else successes)
-                += ((app, nestedCtx.typerState))
+              if nestedCtx.reporter.hasErrors then failures += ((app, nestedCtx.typerState))
+              else successes += ((alt, app, nestedCtx.typerState))
             typr.println(i"extension methods at level, success: ${successes.toList}, failure: ${failures.toList}")
 
             successes.toList match
-              case success :: Nil => pick(success)
-              case (expansion1, _) :: (expansion2, _) :: _ =>
-                report.error(AmbiguousExtensionMethod(tree, expansion1, expansion2), tree.srcPos)
-                expansion1
+              case (_, app, ts) :: Nil => pick((app, ts))
+              case multiple @ (_ :: _ :: _) =>
+                // Several candidates at this precedence level apply to the
+                // receiver. Prefer the one whose extension method is the most
+                // specific, reusing overload resolution's specificity rules, so
+                // that resolution matches how co-located overloaded extension
+                // methods already behave. Only if there is no unique most
+                // specific candidate is the reference genuinely ambiguous.
+                narrowMostSpecific(multiple.map(_._1)) match
+                  case bestRef :: Nil =>
+                    val (_, app, ts) = multiple.find(_._1 eq bestRef).get
+                    pick((app, ts))
+                  case _ =>
+                    val (_, expansion1, _) :: (_, expansion2, _) :: _ = multiple: @unchecked
+                    report.error(AmbiguousExtensionMethod(tree, expansion1, expansion2), tree.srcPos)
+                    expansion1
               case Nil =>
                 // No candidate at this precedence level applies to the receiver.
                 // Remember the closest level's failure, exclude these candidates,
