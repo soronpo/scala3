@@ -1,0 +1,4 @@
+-- Error: tests/neg-macros/i2XYZW-b/Test_2.scala:7:31 ------------------------------------------------------------------
+7 |  val y = Rewrites.outerRewrite(V(0))    // error   <-- reported here, hiding the rewrite internals
+  |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |          invalid operand

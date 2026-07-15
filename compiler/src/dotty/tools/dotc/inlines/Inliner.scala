@@ -768,10 +768,29 @@ class Inliner(val call: tpd.Tree)(using Context):
           case _ => em"A literal string is expected as an argument to `compiletime.error`. Got $msgArg"
         }
         // Usually `error` is called from within a rewrite method. In this
-        // case we need to report the error at the point of the outermost enclosing inline
+        // case we need to report the error at the point of the enclosing inline
         // call. This way, a defensively written rewrite method can always
         // report bad inputs at the point of call instead of revealing its internals.
-        val callToReport = if (enclosingInlineds.nonEmpty) enclosingInlineds.last else call
+        //
+        // `enclosingInlineds` is ordered innermost-first; its last element is the
+        // outermost enclosing inline call, i.e. the use site the user wrote. The
+        // enclosing calls whose span is lexically contained in that use site are the
+        // user-written sub-expressions of it (for instance the operands of a chain of
+        // inline operators); we report at the innermost of these, so a deferred error
+        // surfaces on the sub-expression that actually produced it. This stays correct
+        // even when an enclosing inline macro strips the `Inlined` wrapper of a
+        // deferred error and re-splices the bare node into its own expansion, which
+        // would otherwise relocate the error to the enclosing call. Enclosing calls
+        // outside the use site's span are internals of a rewrite method — their call
+        // sites are in inline *definitions*, not at the use site — and are skipped, so
+        // such a method still reports bad inputs at its point of call.
+        val callToReport =
+          if enclosingInlineds.isEmpty then call
+          else
+            val useSite = enclosingInlineds.last
+            enclosingInlineds.find(c =>
+              c.source == useSite.source && useSite.span.contains(c.span)
+            ).getOrElse(useSite)
         val ctxToReport = ctx.outersIterator.dropWhile(enclosingInlineds(using _).nonEmpty).next()
         // The context in which we report should still use the existing context reporter
         val ctxOrigReporter = ctxToReport.fresh.setReporter(ctx.reporter)

@@ -1,0 +1,8 @@
+-- Error: tests/neg-macros/i2XYZW/Test_2.scala:5:10 --------------------------------------------------------------------
+5 |  val a = v + V(0)          // error
+  |          ^^^^^^^^
+  |          invalid operand
+-- Error: tests/neg-macros/i2XYZW/Test_2.scala:6:15 --------------------------------------------------------------------
+6 |  val b = v + (v + V(0))    // error
+  |               ^^^^^^^^
+  |               invalid operand
