@@ -67,7 +67,31 @@ object DocumentationWebsite {
       }
     }
 
-    tryFetch(5, Duration(60, "s"))
+    // Offline/sandbox-friendly inkuire.js provisioning.
+    // inkuire.js is a GitHub *release asset* (not a repo file); in restricted
+    // network environments the download 403s/times out. The asset only powers
+    // scaladoc's search box, so failing to fetch it must NOT break publishLocal.
+    //  - INKUIRE_JS=/path/to/inkuire.js  -> use a locally provided copy
+    //  - committed project/inkuire.js    -> use the vendored copy (default, offline)
+    //  - SKIP_INKUIRE_FETCH=1            -> skip the fetch, keep the empty stub
+    //  - otherwise                       -> best-effort fetch, empty stub on failure
+    val vendoredInkuire = new File("project/inkuire.js")
+    sys.env.get("INKUIRE_JS").map(new File(_))
+      .orElse(Some(vendoredInkuire))
+      .filter(_.exists) match {
+      case Some(local) =>
+        println(s"Using local inkuire.js from $local")
+        sbt.IO.copyFile(local, inkuireDestinationFile)
+      case None if sys.env.get("SKIP_INKUIRE_FETCH").contains("1") =>
+        println("SKIP_INKUIRE_FETCH=1: keeping empty inkuire.js stub (scaladoc search disabled)")
+      case None =>
+        try tryFetch(5, Duration(60, "s"))
+        catch {
+          case e: Throwable =>
+            println(s"WARNING: could not fetch inkuire.js (${e.getMessage}); " +
+              "keeping empty stub (scaladoc search disabled)")
+        }
+    }
     Seq(
       inkuireDestinationFile,
       mainDestinationFile,
