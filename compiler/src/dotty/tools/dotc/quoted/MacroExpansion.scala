@@ -13,9 +13,6 @@ object MacroExpansion {
     ctx.property(MacroExpansionPosition)
 
   def context(inlinedFrom: tpd.Tree)(using Context): Context =
-    // QuotesCache is initialized once per run (see `Run.compileUnits`) so that
-    // unpickled quote templates are reused across macro expansions, not wiped
-    // for every expansion. The fresh context here inherits that run-level cache.
     ctx.fresh.setProperty(MacroExpansionPosition, inlinedFrom.sourcePos).setTypeAssigner(new Typer(ctx.nestingLevel + 1)).withSource(inlinedFrom.source)
 }
 

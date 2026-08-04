@@ -12,17 +12,13 @@ object QuotesCache {
   private val QuotesCacheKey = new Property.Key[collection.mutable.Map[String | List[String], Tree]]
 
 
-  /** Get the cached tree of the quote.
-   *  Tolerates a missing cache (no property in context): behaves as a miss.
-   */
+  /** Get the cached tree of the quote */
   def getTree(pickled: String | List[String])(using Context): Option[Tree] =
-    ctx.property(QuotesCacheKey).flatMap(_.get(pickled))
+    ctx.property(QuotesCacheKey).get.get(pickled)
 
-  /** Update the cached tree of the quote.
-   *  Tolerates a missing cache (no property in context): a no-op.
-   */
+  /** Update the cached tree of the quote */
   def update(pickled: String | List[String], tree: Tree)(using Context): Unit =
-    ctx.property(QuotesCacheKey).foreach(_.update(pickled, tree))
+    ctx.property(QuotesCacheKey).get.update(pickled, tree)
 
   /** Context with a cache for quote trees and tasty bytes */
   def init(ctx: FreshContext): ctx.type =
