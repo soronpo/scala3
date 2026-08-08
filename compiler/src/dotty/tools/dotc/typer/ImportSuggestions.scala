@@ -11,6 +11,7 @@ import StdNames.*
 import config.Printers.{implicits, implicitsDetailed}
 import ast.{untpd, tpd}
 import Implicits.{hasExtMethod, Candidate}
+import inlines.Inlines
 import java.util.{Timer, TimerTask}
 import collection.mutable
 import cc.isCaptureChecking
@@ -171,6 +172,31 @@ trait ImportSuggestions:
     def testContext(): Context =
       ctx.fresh.retractMode(Mode.ImplicitsEnabled).setExploreTyperState()
 
+    /** Is `ref` accepted by `Compatibility.constrainResult` without comparing its result
+     *  type to the expected type? That's the case for `transparent inline` methods and
+     *  for inline methods returning a match type, since their type after inline expansion
+     *  can be more specific than their declared result type.
+     */
+    def hasUnconstrainedResult(ref: TermRef)(using Context): Boolean =
+      val sym = ref.symbol
+      Inlines.isInlineable(sym)
+      && (sym.is(Transparent) || ref.widen.finalResultType.isMatchAlias)
+
+    /** Can `ref`, seen as a conversion matching the view prototype `pt`, provide the
+     *  member selected in `pt`? A candidate with an unconstrained result type matches
+     *  a selection prototype whatever the selected member is, which would make it a
+     *  suggestion for every missing member. Since we cannot expand it here, test the
+     *  selection against its declared result type. Test case: neg/i26752.scala.
+     */
+    def canProvideSelection(ref: TermRef, pt: ViewProto)(using Context): Boolean = pt.resType match
+      case selProto: SelectionProto if hasUnconstrainedResult(ref) =>
+        val declaredResult = ref.widen.stripPoly match
+          case mt: MethodType => wildApprox(mt.finalResultType)
+          case _ => WildcardType // not a method, so its result was constrained after all
+        hasExtMethod(ref, selProto) || selProto.isMatchedBy(declaredResult, keepConstraint = false)
+      case _ =>
+        true
+
     /** Test whether the head of a given instance matches the expected type `pt`,
      *  ignoring any dependent implicit arguments.
      */
@@ -184,7 +210,7 @@ trait ImportSuggestions:
             // To regain precision, test both sides separately.
             test(ViewProto(argType, rt1)) || test(ViewProto(argType, rt2))
           case pt: ViewProto =>
-            pt.isMatchedBy(ref, keepConstraint = false)
+            pt.isMatchedBy(ref, keepConstraint = false) && canProvideSelection(ref, pt)
           case _ =>
             normalize(ref, pt) <:< pt
         test(pt)
