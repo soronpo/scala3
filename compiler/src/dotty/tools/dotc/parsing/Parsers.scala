@@ -18,6 +18,7 @@ import NameKinds.{WildcardParamName, QualifiedName}
 import NameOps.*
 import ast.{Positioned, Trees}
 import ast.Trees.*
+import ast.untpd
 import StdNames.*
 import util.Spans.*
 import util.chaining.*
@@ -1766,6 +1767,15 @@ object Parsers {
         case _: Match => in.token == MATCH
         case _: New => in.token == NEW
         case _: (ForYield | ForDo) => in.token == FOR
+        case apply: Apply if in.featureEnabled(Feature.methodBlockEndMarkers) =>
+          // Extract method name from Apply node
+          val methodName = apply.getAttachment(untpd.MethodName).orElse:
+            // Fallback to extracting from fun tree
+            apply.fun match
+              case Select(_, name) => Some(name)
+              case Ident(name) => Some(name)
+              case _ => None
+          methodName.exists(name => in.isIdent && in.name.nn == name.toTermName)
         case _ => false
 
       def endName = if in.token == IDENTIFIER then in.name.toString else tokenString(in.token)
@@ -3193,6 +3203,23 @@ object Parsers {
     def mkApply(fn: Tree, args: (List[Tree], Boolean)): Tree =
       val res = Apply(fn, args._1)
       if args._2 then res.setApplyKind(ApplyKind.Using)
+      // Track method name for end marker support when using colon syntax
+      if in.featureEnabled(Feature.methodBlockEndMarkers) then
+        val methodName = fn match
+          case Select(_, name) => name
+          case Ident(name) => name
+          case apply: Apply =>
+            // For nested Apply (e.g., test("arg"):), extract the method name from the inner Apply
+            apply.getAttachment(untpd.MethodName) match
+              case Some(name) => name
+              case None =>
+                apply.fun match
+                  case Select(_, name) => name
+                  case Ident(name) => name
+                  case _ => return res
+          case _ => return res
+        // Store method name as attachment for end marker matching
+        res.putAttachment(untpd.MethodName, methodName)
       res
 
     val argumentExpr: () => Tree = () => expr(Location.InArgs) match
